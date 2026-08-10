@@ -7,6 +7,9 @@ map/.mysql-data/
 logs/
 *.log
 
+# Fast test reports are local, regenerated artifacts. Release-level reports stay tracked.
+docs/quality/reports/test-matrix-quick.json
+
 # MySQL dev data directories
 mysql-data/
 .hust-world-mysql/
