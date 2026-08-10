@@ -1,5 +1,7 @@
 # HUST WORLD Personal Edition
 
+[![Continuous Integration](https://github.com/Jiatong1008/HUST-WORLD/actions/workflows/ci.yml/badge.svg)](https://github.com/Jiatong1008/HUST-WORLD/actions/workflows/ci.yml)
+
 > 本仓库是基于小组课程设计 HUST WORLD 的个人延续版本；原有成果保留团队贡献说明，个人新增边界见 [个人版说明](docs/personal/README.md)。
 
 个人版维护者：Jiatong（GitHub：[Jiatong1008](https://github.com/Jiatong1008)）。
@@ -11,6 +13,7 @@
 - 叙事与设计说明：[喻园第一周](docs/personal/hust-week-design.md)
 - 素材来源和公开发布前检查：[素材登记](docs/ASSET_ATTRIBUTION.md)
 - 功能自动化验证：`npm run test:campus-week`
+- GitHub 自动检查说明：[维护流程](docs/personal/github-workflow.md)
 
 HUST WORLD 是一个以华中科技大学校园生活为主题的 Web 校园模拟 RPG。
 玩家可以创建角色，在校园地图中移动、探索地点、与 NPC 对话、完成任务、加入社团、参加课程、跑步锻炼、触发考试/战斗，经历完整的大学成长周期。
