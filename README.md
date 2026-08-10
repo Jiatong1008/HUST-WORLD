@@ -6,6 +6,23 @@
 
 个人版维护者：Jiatong（GitHub：[Jiatong1008](https://github.com/Jiatong1008)）。
 
+## 快速导航
+
+- [本地运行](#安装与启动)
+- [喻园第一周：个人版叙事闭环](#个人版亮点喻园第一周)
+- [测试与质量](#测试与质量)
+- [贡献规范](CONTRIBUTING.md)
+- [个人版工作边界](docs/personal/README.md)
+
+## 项目概览
+
+| 方向 | 当前内容 |
+| --- | --- |
+| 校园探索 | 可交互地图、POI、NPC、室内场景与校园巴士 |
+| 成长系统 | 主支线任务、背包、技能、跑步、课程与考试挑战 |
+| 个人叙事 | “喻园第一周”四段闭环、记忆卡、倾向统计和结局 |
+| 工程质量 | 浏览器回归、API 冒烟、端到端测试、Docker 与 GitHub Actions |
+
 ## 个人版亮点：喻园第一周
 
 在游戏主界面右下角打开“喻园第一周”，可体验一条完整的校园叙事闭环：报到、图书馆学习、醉晚亭夜游、帮助下一位新同学。四次选择会写入统一存档，生成记忆卡、三维倾向和结局。
@@ -44,10 +61,19 @@ npm install
 
 2. 配置环境变量
 
+PowerShell：
+
+```powershell
+Copy-Item .env.example .env
+```
+
+macOS / Linux / Git Bash：
+
 ```bash
 cp .env.example .env
-# 编辑 .env，填入 MySQL 用户名、密码以及服务端口（PORT）
 ```
+
+编辑 `.env`，填入 MySQL 用户名、密码以及服务端口（`PORT`）。
 
 `.env` 中与运行直接相关的示例：
 
@@ -104,6 +130,21 @@ Windows 也可以直接运行 `start.bat`。
 - 地图 UI 调试页面：http://localhost:8080/tools/tests/test-map-ui.html
 
 > 如果 `.env` 中修改了 `PORT`，请将示例 URL 中的 `8080` 替换为实际端口。
+
+## 测试与质量
+
+```bash
+# 日常改动：质量门禁 + 核心 UI 回归
+npm run test:quick
+
+# 提交前：API、服务层、端到端流程等
+npm run test:standard
+
+# 发版前：完整回归矩阵
+npm run test:full
+```
+
+GitHub Actions 会在推送 `main` 或创建 Pull Request 时自动运行快速矩阵；详细协作方式见 [GitHub 维护流程](docs/personal/github-workflow.md)。
 
 ## 第九阶段 UI/UX 产品化
 

@@ -1,7 +1,7 @@
 {
   "name": "hust-world-personal",
   "version": "1.0.0",
-  "description": "HUST WORLD campus simulation game course design",
+  "description": "Personal continuation edition of a HUST-inspired campus simulation RPG.",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -42,9 +42,21 @@
     "test:standard": "node tools/tests/test-matrix.js standard",
     "test:full": "node tools/tests/test-matrix.js full"
   },
-  "keywords": ["game", "campus", "simulation"],
+  "keywords": ["game", "campus", "simulation", "rpg", "hust", "web-game"],
   "author": "Jiatong",
   "license": "MIT",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jiatong1008/HUST-WORLD.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Jiatong1008/HUST-WORLD/issues"
+  },
+  "homepage": "https://github.com/Jiatong1008/HUST-WORLD#readme",
+  "engines": {
+    "node": ">=18"
+  },
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",

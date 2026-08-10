@@ -31,8 +31,5 @@ jobs:
       - name: Install Chromium for browser checks
         run: npx playwright install --with-deps chromium
 
-      - name: Run quality gate
-        run: npm run quality:gate
-
-      - name: Run quick regression matrix
+      - name: Run quick regression matrix (includes quality gate)
         run: npm run test:quick
