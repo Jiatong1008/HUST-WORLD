@@ -1,0 +1,144 @@
+{
+  "title": "HUST WORLD Test Matrix Report",
+  "tier": "full",
+  "description": "Broad regression before releases or major demos.",
+  "startedAt": "2026-08-10T06:41:36.021Z",
+  "finishedAt": "2026-08-10T06:45:02.202Z",
+  "port": "4000",
+  "baseUrl": "http://localhost:4000",
+  "results": [
+    {
+      "script": "quality:gate",
+      "status": 0,
+      "durationMs": 6875,
+      "ok": true
+    },
+    {
+      "script": "check:config",
+      "status": 0,
+      "durationMs": 1423,
+      "ok": true
+    },
+    {
+      "script": "smoke:api",
+      "status": 0,
+      "durationMs": 1974,
+      "ok": true
+    },
+    {
+      "script": "cleanup:smoke",
+      "status": 0,
+      "durationMs": 1471,
+      "ok": true
+    },
+    {
+      "script": "smoke:api",
+      "status": 0,
+      "durationMs": 1926,
+      "ok": true
+    },
+    {
+      "script": "test:services",
+      "status": 0,
+      "durationMs": 1728,
+      "ok": true
+    },
+    {
+      "script": "test:map",
+      "status": 0,
+      "durationMs": 53679,
+      "ok": true
+    },
+    {
+      "script": "test:npc",
+      "status": 0,
+      "durationMs": 31369,
+      "ok": true
+    },
+    {
+      "script": "test:quest",
+      "status": 0,
+      "durationMs": 6878,
+      "ok": true
+    },
+    {
+      "script": "test:growth",
+      "status": 0,
+      "durationMs": 10481,
+      "ok": true
+    },
+    {
+      "script": "test:inventory",
+      "status": 0,
+      "durationMs": 13642,
+      "ok": true
+    },
+    {
+      "script": "test:skills",
+      "status": 0,
+      "durationMs": 13487,
+      "ok": true
+    },
+    {
+      "script": "test:linkage",
+      "status": 0,
+      "durationMs": 11488,
+      "ok": true
+    },
+    {
+      "script": "test:campus-week",
+      "status": 0,
+      "durationMs": 6676,
+      "ok": true
+    },
+    {
+      "script": "test:dashboard",
+      "status": 0,
+      "durationMs": 2831,
+      "ok": true
+    },
+    {
+      "script": "test:panels-ui",
+      "status": 0,
+      "durationMs": 7156,
+      "ok": true
+    },
+    {
+      "script": "test:ui-layout",
+      "status": 0,
+      "durationMs": 10227,
+      "ok": true
+    },
+    {
+      "script": "test:responsive",
+      "status": 0,
+      "durationMs": 7683,
+      "ok": true
+    },
+    {
+      "script": "test:e2e",
+      "status": 0,
+      "durationMs": 13694,
+      "ok": true
+    },
+    {
+      "script": "cleanup:smoke",
+      "status": 0,
+      "durationMs": 1483,
+      "ok": true
+    }
+  ],
+  "removedTransientScreenshots": [
+    "test-inventory-system-result.png",
+    "test-linkage-result.png",
+    "test-skills-system-result.png",
+    "test-growth-system-result.png",
+    "test-map-poi-result.png",
+    "test-map-scenes-result.png",
+    "test-npc-dialogue-result.png",
+    "test-npc-map-result.png",
+    "test-quest-system-result.png",
+    "test-shop-result.png"
+  ],
+  "passed": true
+}

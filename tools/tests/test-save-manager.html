@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SaveManager 调试工具 - HUST WORLD</title>
+    <style>
+        :root {
+            --bg: #0f111a;
+            --panel: #1a1d2b;
+            --border: rgba(255, 255, 255, 0.08);
+            --gold: #ffd700;
+            --cyan: #43c7d6;
+            --text: #e5e7eb;
+            --muted: #9ca3af;
+            --error: #f87171;
+            --success: #4ade80;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            padding: 24px;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Microsoft YaHei', 'PingFang SC', sans-serif;
+            line-height: 1.6;
+        }
+        h1 {
+            margin: 0 0 8px;
+            color: var(--gold);
+            font-size: 24px;
+        }
+        .subtitle {
+            color: var(--muted);
+            font-size: 13px;
+            margin-bottom: 24px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+        }
+        .panel {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 18px;
+        }
+        .panel h2 {
+            margin: 0 0 14px;
+            font-size: 16px;
+            color: var(--cyan);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+        }
+        .field {
+            margin-bottom: 10px;
+            font-size: 13px;
+        }
+        .field-label {
+            color: var(--muted);
+            display: inline-block;
+            min-width: 110px;
+        }
+        .field-value {
+            color: var(--text);
+            word-break: break-all;
+        }
+        .field-value.null {
+            color: var(--muted);
+            font-style: italic;
+        }
+        .btn-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 14px;
+        }
+        button {
+            padding: 9px 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text);
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+        button:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 215, 0, 0.3);
+        }
+        button.primary {
+            background: linear-gradient(135deg, #D4A017, var(--gold));
+            color: #12142a;
+            border: none;
+            font-weight: 700;
+        }
+        button.primary:hover {
+            filter: brightness(1.1);
+        }
+        button.danger {
+            border-color: rgba(248, 113, 113, 0.3);
+            color: var(--error);
+        }
+        button.danger:hover {
+            background: rgba(248, 113, 113, 0.1);
+        }
+        .log {
+            margin-top: 24px;
+            background: #0a0c14;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px;
+            min-height: 200px;
+            max-height: 500px;
+            overflow-y: auto;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 12px;
+        }
+        .log-entry {
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+        .log-entry:last-child {
+            border-bottom: none;
+        }
+        .log-time {
+            color: var(--muted);
+            margin-right: 8px;
+        }
+        .log-ok { color: var(--success); }
+        .log-err { color: var(--error); }
+        .log-info { color: var(--cyan); }
+        .json {
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .hint {
+            color: var(--muted);
+            font-size: 12px;
+            margin-top: 12px;
+        }
+    </style>
+</head>
+<body>
+    <h1>SaveManager 浏览器调试工具</h1>
+    <div class="subtitle">验证游客/登录/本地/远程存档状态 · 不依赖游戏主界面</div>
+
+    <div class="grid">
+        <div class="panel">
+            <h2>当前会话 (SessionManager)</h2>
+            <div id="session-info">
+                <div class="field"><span class="field-label">已登录:</span> <span class="field-value null">检测中...</span></div>
+            </div>
+            <div class="btn-row">
+                <button onclick="refreshSession()">刷新会话</button>
+                <button class="danger" onclick="clearSessionOnly()">仅清除会话</button>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2>本地存档 (localStorage)</h2>
+            <div id="local-save-info">
+                <div class="field"><span class="field-label">存档 key:</span> <span class="field-value">hust_world_save_v1</span></div>
+                <div class="field"><span class="field-label">存在:</span> <span class="field-value null">检测中...</span></div>
+            </div>
+            <div class="btn-row">
+                <button onclick="readLocalSave()">读取本地存档</button>
+                <button class="primary" onclick="writeTestLocalSave()">写入测试本地存档</button>
+                <button onclick="migrateOldSave()">迁移旧存档</button>
+                <button class="danger" onclick="clearGuestSave()">清理本地游客存档</button>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2>SaveManager 操作</h2>
+            <div class="btn-row">
+                <button class="primary" onclick="callDebugSave()">debugSaveGame</button>
+                <button onclick="callDebugLoad()">debugLoadSave</button>
+                <button class="danger" onclick="callDebugReset()">debugResetSave</button>
+            </div>
+            <div class="hint">这些操作会触发 SaveManager 的 save/load/reset 流程，自动判断游客/登录模式。</div>
+        </div>
+
+        <div class="panel">
+            <h2>远程存档 API</h2>
+            <div class="btn-row">
+                <button onclick="callRemoteGet()">GET save</button>
+                <button class="primary" onclick="callRemotePut()">PUT save</button>
+                <button class="danger" onclick="callRemoteReset()">POST reset</button>
+            </div>
+            <div class="hint">仅在有 currentCharacterId 且 API 可用时调用；否则提示跳过。</div>
+        </div>
+    </div>
+
+    <div class="panel log" id="log-panel">
+        <h2 style="margin-top:0;">操作日志</h2>
+        <div id="log-content"></div>
+    </div>
+
+    <script src="/game/js/core/SessionManager.js"></script>
+    <script src="/game/js/api.js"></script>
+    <script src="/game/js/core/SaveManager.js"></script>
+    <script>
+        const logContent = document.getElementById('log-content');
+
+        function log(message, type = 'info') {
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            const time = new Date().toLocaleTimeString();
+            const cls = type === 'ok' ? 'log-ok' : (type === 'err' ? 'log-err' : 'log-info');
+            entry.innerHTML = `<span class="log-time">${time}</span><span class="${cls}">${escapeHtml(message)}</span>`;
+            logContent.appendChild(entry);
+            logContent.scrollTop = logContent.scrollHeight;
+        }
+
+        function logJson(label, data, type = 'info') {
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            const time = new Date().toLocaleTimeString();
+            const cls = type === 'ok' ? 'log-ok' : (type === 'err' ? 'log-err' : 'log-info');
+            entry.innerHTML = `<span class="log-time">${time}</span><span class="${cls}">${escapeHtml(label)}</span>` +
+                `<div class="json">${escapeHtml(JSON.stringify(data, null, 2))}</div>`;
+            logContent.appendChild(entry);
+            logContent.scrollTop = logContent.scrollHeight;
+        }
+
+        function escapeHtml(str) {
+            return String(str ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function refreshSession() {
+            if (typeof sessionManager === 'undefined') {
+                log('sessionManager 未加载', 'err');
+                return;
+            }
+            sessionManager.loadSession();
+            const user = sessionManager.getUser();
+            const chars = sessionManager.getCharacters();
+            const currentId = sessionManager.getCurrentCharacterId();
+            const token = sessionManager.getToken();
+
+            const container = document.getElementById('session-info');
+            container.innerHTML = `
+                <div class="field"><span class="field-label">已登录:</span> <span class="field-value">${sessionManager.isLoggedIn() ? '是' : '否'}</span></div>
+                <div class="field"><span class="field-label">token:</span> <span class="field-value ${token ? '' : 'null'}">${token ? token.slice(0, 20) + '...' : '无'}</span></div>
+                <div class="field"><span class="field-label">userId:</span> <span class="field-value ${user?.userId ? '' : 'null'}">${user?.userId || '无'}</span></div>
+                <div class="field"><span class="field-label">用户名:</span> <span class="field-value ${user?.username ? '' : 'null'}">${user?.username || '无'}</span></div>
+                <div class="field"><span class="field-label">角色数:</span> <span class="field-value">${chars.length}</span></div>
+                <div class="field"><span class="field-label">当前角色 ID:</span> <span class="field-value ${currentId ? '' : 'null'}">${currentId || '无'}</span></div>
+                <div class="field"><span class="field-label">角色列表:</span></div>
+                <div class="json">${escapeHtml(JSON.stringify(chars, null, 2))}</div>
+            `;
+            log('会话已刷新', 'ok');
+        }
+
+        function clearSessionOnly() {
+            if (typeof sessionManager === 'undefined') {
+                log('sessionManager 未加载', 'err');
+                return;
+            }
+            sessionManager.logout();
+            log('会话已清除（保留本地游客存档）', 'ok');
+            refreshSession();
+        }
+
+        function readLocalSave() {
+            if (typeof saveManager === 'undefined') {
+                log('saveManager 未加载', 'err');
+                return;
+            }
+            const save = saveManager.loadLocal();
+            updateLocalSaveInfo(true);
+            if (save) {
+                logJson('本地存档内容', save, 'ok');
+            } else {
+                log('本地存档为空', 'info');
+            }
+        }
+
+        function writeTestLocalSave() {
+            if (typeof saveManager === 'undefined') {
+                log('saveManager 未加载', 'err');
+                return;
+            }
+            const testSnapshot = {
+                version: '1',
+                savedAt: new Date().toISOString(),
+                mode: saveManager.getMode(),
+                character: {
+                    characterId: null,
+                    characterName: '调试游客',
+                    gender: 'male',
+                    college: '计算机科学与技术学院',
+                    level: 2,
+                    experience: 100,
+                    money: 2000,
+                    physical: 60,
+                    social: 55,
+                    knowledge: 70,
+                    mood: 80,
+                    grade: 1,
+                    semester: 1,
+                    week: 3
+                },
+                gameTime: { day: 3, hour: 14, minute: 30 },
+                position: { mapId: 1, x: 120, y: 240 },
+                progress: { tutorial: true },
+                modules: { clubs: { joined: [1] }, exploration: { count: 2 } },
+                settings: { volume: 0.8 }
+            };
+            saveManager.saveLocal(testSnapshot);
+            updateLocalSaveInfo(true);
+            logJson('已写入测试本地存档', testSnapshot, 'ok');
+        }
+
+        function migrateOldSave() {
+            if (typeof saveManager === 'undefined') {
+                log('saveManager 未加载', 'err');
+                return;
+            }
+            const migrated = saveManager.migrateOldSave();
+            updateLocalSaveInfo(true);
+            if (migrated) {
+                logJson('旧存档已迁移，内容如下', migrated, 'ok');
+            } else {
+                log('无旧存档可迁移或已迁移过', 'info');
+            }
+        }
+
+        function clearGuestSave() {
+            if (typeof saveManager === 'undefined') {
+                log('saveManager 未加载', 'err');
+                return;
+            }
+            saveManager.resetLocal();
+            updateLocalSaveInfo(false);
+            log('本地游客存档已清理', 'ok');
+        }
+
+        function updateLocalSaveInfo(exists) {
+            const container = document.getElementById('local-save-info');
+            const raw = localStorage.getItem('hust_world_save_v1');
+            const parsed = raw ? (() => { try { return JSON.parse(raw); } catch { return null; } })() : null;
+            container.innerHTML = `
+                <div class="field"><span class="field-label">存档 key:</span> <span class="field-value">hust_world_save_v1</span></div>
+                <div class="field"><span class="field-label">存在:</span> <span class="field-value">${raw ? '是' : '否'}</span></div>
+                <div class="field"><span class="field-label">大小:</span> <span class="field-value">${raw ? raw.length + ' 字符' : '0'}</span></div>
+                <div class="field"><span class="field-label">savedAt:</span> <span class="field-value">${parsed?.savedAt || '无'}</span></div>
+                <div class="field"><span class="field-label">mode:</span> <span class="field-value">${parsed?.mode || '无'}</span></div>
+            `;
+        }
+
+        async function callDebugSave() {
+            if (typeof debugSaveGame !== 'function') {
+                log('debugSaveGame 未暴露到全局', 'err');
+                return;
+            }
+            try {
+                const result = await debugSaveGame();
+                logJson('debugSaveGame 完成', result, 'ok');
+            } catch (error) {
+                log('debugSaveGame 失败: ' + error.message, 'err');
+            }
+        }
+
+        async function callDebugLoad() {
+            if (typeof debugLoadSave !== 'function') {
+                log('debugLoadSave 未暴露到全局', 'err');
+                return;
+            }
+            try {
+                const result = await debugLoadSave();
+                logJson('debugLoadSave 完成', result, 'ok');
+            } catch (error) {
+                log('debugLoadSave 失败: ' + error.message, 'err');
+            }
+        }
+
+        async function callDebugReset() {
+            if (typeof debugResetSave !== 'function') {
+                log('debugResetSave 未暴露到全局', 'err');
+                return;
+            }
+            try {
+                const result = await debugResetSave();
+                updateLocalSaveInfo(true);
+                logJson('debugResetSave 完成', result, 'ok');
+            } catch (error) {
+                log('debugResetSave 失败: ' + error.message, 'err');
+            }
+        }
+
+        async function callRemoteGet() {
+            if (typeof API === 'undefined' || !API.getCharacterSave) {
+                log('API 未加载或缺少 getCharacterSave', 'err');
+                return;
+            }
+            const characterId = getCharacterIdForRemote();
+            if (!characterId) {
+                log('无当前角色 ID，跳过远程 GET', 'info');
+                return;
+            }
+            try {
+                const result = await API.getCharacterSave(characterId);
+                logJson('远程 GET save 成功', result, 'ok');
+            } catch (error) {
+                log('远程 GET save 失败: ' + error.message, 'err');
+            }
+        }
+
+        async function callRemotePut() {
+            if (typeof API === 'undefined' || !API.updateCharacterSave) {
+                log('API 未加载或缺少 updateCharacterSave', 'err');
+                return;
+            }
+            const characterId = getCharacterIdForRemote();
+            if (!characterId) {
+                log('无当前角色 ID，跳过远程 PUT', 'info');
+                return;
+            }
+            try {
+                const payload = {
+                    level: 2,
+                    experience: 120,
+                    money: 2100,
+                    physical: 65,
+                    social: 60,
+                    knowledge: 75,
+                    mood: 85,
+                    current_map_id: 1,
+                    position_x: 150,
+                    position_y: 250,
+                    grade: 1,
+                    semester: 1,
+                    week: 3,
+                    game_progress: {
+                        version: '1',
+                        savedAt: new Date().toISOString(),
+                        gameTime: { day: 3, hour: 15, minute: 0 },
+                        position: { mapId: 1, x: 150, y: 250 },
+                        progress: { debug: true },
+                        modules: {},
+                        settings: {}
+                    }
+                };
+                const result = await API.updateCharacterSave(characterId, payload);
+                logJson('远程 PUT save 成功', result, 'ok');
+            } catch (error) {
+                log('远程 PUT save 失败: ' + error.message, 'err');
+            }
+        }
+
+        async function callRemoteReset() {
+            if (typeof API === 'undefined' || !API.resetCharacterSave) {
+                log('API 未加载或缺少 resetCharacterSave', 'err');
+                return;
+            }
+            const characterId = getCharacterIdForRemote();
+            if (!characterId) {
+                log('无当前角色 ID，跳过远程 reset', 'info');
+                return;
+            }
+            try {
+                const result = await API.resetCharacterSave(characterId);
+                logJson('远程 POST reset 成功', result, 'ok');
+            } catch (error) {
+                log('远程 POST reset 失败: ' + error.message, 'err');
+            }
+        }
+
+        function getCharacterIdForRemote() {
+            if (typeof sessionManager !== 'undefined') {
+                const id = sessionManager.getCurrentCharacterId();
+                if (id) return id;
+            }
+            const save = typeof saveManager !== 'undefined' ? saveManager.loadLocal() : null;
+            return save?.character?.characterId || null;
+        }
+
+        window.addEventListener('load', () => {
+            log('调试页面加载完成');
+            refreshSession();
+            updateLocalSaveInfo(!!localStorage.getItem('hust_world_save_v1'));
+        });
+    </script>
+</body>
+</html>

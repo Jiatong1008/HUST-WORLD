@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HUST WORLD - 支线任务调试工具</title>
+  <style>
+    :root {
+      --gold: #FFD700;
+      --bg: #0a0c18;
+      --panel: #12142a;
+      --border: rgba(255, 215, 0, 0.2);
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --info: #3b82f6;
+      --club: #f59e0b;
+      --running: #10b981;
+      --exploration: #3b82f6;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; padding: 20px;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Microsoft YaHei', sans-serif;
+      line-height: 1.6;
+    }
+    h1 { color: var(--gold); margin-bottom: 6px; }
+    .subtitle { color: var(--muted); font-size: 14px; margin-bottom: 24px; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+      gap: 20px;
+    }
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    }
+    .panel h2 {
+      margin: 0 0 16px 0;
+      font-size: 18px;
+      color: var(--gold);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      padding: 10px 16px;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 10px;
+      background: rgba(255,255,255,0.05);
+      color: var(--text);
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin: 4px 4px 4px 0;
+    }
+    .btn:hover { background: rgba(255,215,0,0.1); border-color: var(--gold); transform: translateY(-1px); }
+    .btn-success { border-color: rgba(34,197,94,0.4); color: var(--success); }
+    .btn-danger { border-color: rgba(239,68,68,0.4); color: var(--danger); }
+    .btn-warning { border-color: rgba(245,158,11,0.4); color: var(--warning); }
+    .btn-info { border-color: rgba(59,130,246,0.4); color: var(--info); }
+    .btn-club { border-color: rgba(245,158,11,0.4); color: var(--club); }
+    .btn-running { border-color: rgba(16,185,129,0.4); color: var(--running); }
+    .btn-exploration { border-color: rgba(59,130,246,0.4); color: var(--exploration); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .field {
+      display: flex; align-items: center; gap: 10px; margin: 10px 0;
+      flex-wrap: wrap;
+    }
+    .field label { color: var(--muted); font-size: 13px; min-width: 70px; }
+    input, select {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      color: var(--text);
+      padding: 8px 12px;
+      font-size: 14px;
+      min-width: 180px;
+    }
+    input:focus, select:focus { outline: none; border-color: var(--gold); }
+    .log {
+      background: rgba(0,0,0,0.2);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 12px;
+      padding: 12px;
+      max-height: 420px;
+      overflow: auto;
+      font-size: 13px;
+      white-space: pre-wrap;
+    }
+    .tag {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-right: 6px;
+    }
+    .tag-AVAILABLE { background: rgba(34,197,94,0.15); color: var(--success); }
+    .tag-ACTIVE { background: rgba(233,30,99,0.15); color: #f472b6; }
+    .tag-COMPLETED { background: rgba(255,215,0,0.15); color: var(--gold); }
+    .tag-LOCKED { background: rgba(158,158,158,0.15); color: var(--muted); }
+    .tag-PREREQ_MET { background: rgba(255,152,0,0.15); color: var(--warning); }
+    .tag-LOCATION_REACHED { background: rgba(33,150,243,0.15); color: var(--info); }
+    .quest-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin: 8px 0;
+    }
+    .quest-card h3 { margin: 0 0 6px 0; font-size: 15px; }
+    .quest-card small { color: var(--muted); font-size: 12px; }
+    .quest-card .side-type {
+      display: inline-block;
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 6px;
+      margin-right: 6px;
+      font-weight: 600;
+    }
+    .side-type-club { background: rgba(245,158,11,0.15); color: var(--club); }
+    .side-type-running { background: rgba(16,185,129,0.15); color: var(--running); }
+    .side-type-exploration { background: rgba(59,130,246,0.15); color: var(--exploration); }
+    .progress-bar { height: 6px; background: rgba(255,255,255,0.08); border-radius: 3px; overflow: hidden; margin: 8px 0; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, var(--gold), #FFA500); border-radius: 3px; }
+    .status-line { color: var(--muted); font-size: 12px; margin-top: 6px; }
+    .mono { font-family: monospace; }
+    .snapshot {
+      background: rgba(0,0,0,0.2);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 10px;
+      padding: 12px;
+      font-size: 12px;
+      max-height: 240px;
+      overflow: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+    .run-step { padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .run-step:last-child { border-bottom: none; }
+    .step-ok { color: var(--success); }
+    .step-fail { color: var(--danger); }
+    .toast {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 12px 24px;
+      border-radius: 10px;
+      background: rgba(20, 22, 40, 0.98);
+      border-left: 3px solid var(--gold);
+      color: #fff;
+      z-index: 10000;
+      font-size: 14px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      opacity: 0;
+      transition: opacity 0.3s, top 0.3s;
+      pointer-events: none;
+    }
+    .toast.show { opacity: 1; top: 30px; }
+  </style>
+</head>
+<body>
+  <h1>🌟 HUST WORLD 支线任务调试面板</h1>
+  <div class="subtitle">在浏览器中调试社团 / 跑步 / 探索 三条支线链；查看主线/支线进度、一键完成、重置支线、导出完整 progress。</div>
+
+  <div id="toast" class="toast"></div>
+
+  <div class="grid">
+    <div class="panel">
+      <h2>🛠️ 调试操作</h2>
+      <div>
+        <button class="btn btn-club" onclick="debugRunClubQuestline()">👥 一键完成社团支线</button>
+        <button class="btn btn-running" onclick="debugRunRunningQuestline()">🏃 一键完成跑步支线</button>
+        <button class="btn btn-exploration" onclick="debugRunExplorationQuestline()">🧭 一键完成探索支线</button>
+      </div>
+      <div>
+        <button class="btn btn-danger" onclick="debugResetSideQuests()">🔄 重置支线进度</button>
+        <button class="btn btn-info" onclick="debugExportFullProgress()">📤 导出完整 progress</button>
+        <button class="btn btn-warning" onclick="debugSaveProgress()">💾 保存进度</button>
+      </div>
+      <div class="status-line" style="margin-top:12px;">全局调试函数已挂载到 window：debugRunClubQuestline / debugRunRunningQuestline / debugRunExplorationQuestline / debugResetSideQuests / debugExportFullProgress</div>
+    </div>
+
+    <div class="panel">
+      <h2>📊 当前状态</h2>
+      <div id="statusPanel">未初始化</div>
+    </div>
+
+    <div class="panel">
+      <h2>🎯 主线进度</h2>
+      <div id="mainQuestPanel" class="log" style="max-height: 240px;">暂无</div>
+    </div>
+
+    <div class="panel">
+      <h2>🌟 支线进度</h2>
+      <div id="sideQuestPanel" class="log" style="max-height: 320px;">暂无</div>
+    </div>
+
+    <div class="panel">
+      <h2>💾 导出 / 快照</h2>
+      <div id="snapshotPanel" class="snapshot">点击「导出完整 progress」查看</div>
+    </div>
+
+    <div class="panel" style="grid-column: 1 / -1;">
+      <h2>📋 调试日志</h2>
+      <div id="questLog" class="log"></div>
+    </div>
+  </div>
+
+  <script src="/js/core/SaveManager.js"></script>
+  <script src="/js/config/TimeEvents.js"></script>
+  <script src="/js/systems/TimeSystem.js"></script>
+  <script type="module">
+    import questTriggerManager from '/js/managers/QuestTriggerManager.js';
+    import { SIDE_QUEST_CONFIG, SIDE_QUEST_GROUPS, SIDE_QUEST_STYLE, QUEST_STATUS, SEMESTER_PHASES } from '/js/config/QuestTriggerConfig.js';
+
+    function showToast(message, color = '#FFD700') {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.style.borderColor = color;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2500);
+    }
+
+    function logLine(text, ok = true) {
+      const log = document.getElementById('questLog');
+      const line = document.createElement('div');
+      line.className = `run-step ${ok ? 'step-ok' : 'step-fail'}`;
+      line.textContent = `${ok ? '✅' : '❌'} ${text}`;
+      log.appendChild(line);
+      log.scrollTop = log.scrollHeight;
+    }
+
+    function clearLog() {
+      document.getElementById('questLog').innerHTML = '';
+    }
+
+    window.saveManager = window.saveManager || new window.SaveManager();
+    window.questTriggerManager = questTriggerManager;
+
+    function initDebug() {
+      // 先初始化默认状态，避免 loadLocal 后 init 重置
+      questTriggerManager.init({
+        id: 'debug-side-character',
+        characterName: '调试角色',
+        college: '计算机科学与技术学院',
+        level: 1,
+        experience: 0,
+        money: 1000,
+        stamina: 100,
+        maxStamina: 100,
+        mood: 50,
+        social: 0,
+        knowledge: 0,
+        physical: 20
+      });
+      // 再加载本地存档（覆盖默认状态，兼容旧存档）
+      const saved = window.saveManager.loadLocal();
+      if (saved && saved.progress) {
+        questTriggerManager.loadProgress(saved.progress, true);
+      }
+      questTriggerManager.autoExamMode = true;
+      questTriggerManager.autoWinExam = true;
+      refreshUI();
+    }
+
+    function refreshUI() {
+      const phase = questTriggerManager.getCurrentPhase();
+      const summary = questTriggerManager.getProgressSummary();
+      const stats = questTriggerManager.characterStats;
+      const time = questTriggerManager.gameTime;
+      const sideProgress = questTriggerManager.getSideProgress();
+
+      document.getElementById('statusPanel').innerHTML = `
+        <div><strong>阶段：</strong>${phase.name}</div>
+        <div><strong>主线进度：</strong>${phase.completedCount || 0}/${phase.totalCount || 0} · ${summary.completionPercent || 0}%</div>
+        <div><strong>等级：</strong>Lv.${stats.level || 1} · <strong>金币：</strong>${stats.money || 0} · <strong>体力：</strong>${stats.stamina || 0}/${stats.maxStamina || 0} · <strong>心情：</strong>${stats.mood || 0}</div>
+        <div><strong>属性：</strong>📚${stats.knowledge || 0} · 🤝${stats.social || 0} · 💪${stats.physical || 0} · ⭐${stats.experience || 0}</div>
+        <div><strong>时间：</strong>第${time.year || 1}学年 第${time.semester || 1}学期 第${time.week || 1}周</div>
+        <div><strong>支线跑步次数：</strong>${sideProgress.runs} · 连续打卡：${sideProgress.runStreak} · 社团活动：${sideProgress.clubActivities} · 探索：${sideProgress.explorationVisits}</div>
+      `;
+
+      renderMainQuests();
+      renderSideQuests();
+    }
+
+    function renderMainQuests() {
+      const container = document.getElementById('mainQuestPanel');
+      const phase = questTriggerManager.getCurrentPhase();
+      const quests = (phase && phase.quests) || [];
+      const html = quests.map(q => {
+        const detail = questTriggerManager.getQuestDetail(q.id);
+        const statusClass = `tag-${detail.status}`;
+        return `<div class="quest-card">
+          <h3><span class="tag ${statusClass}">${detail.status}</span> ${q.name}</h3>
+          <div class="status-line">类型：${q.type} · 地点：${detail.locationName || q.locationName || '未知'}</div>
+        </div>`;
+      }).join('');
+      container.innerHTML = html || '当前阶段无主线任务';
+    }
+
+    function renderSideQuests() {
+      const container = document.getElementById('sideQuestPanel');
+      const groups = questTriggerManager.getSideQuestsByCategory();
+      const html = ['club', 'running', 'exploration'].map(groupKey => {
+        const quests = groups[groupKey] || [];
+        const completed = quests.filter(q => q.status === QUEST_STATUS.COMPLETED).length;
+        let groupHtml = `<div style="margin:12px 0 8px;font-weight:700;color:var(--${groupKey});">${groupKey === 'club' ? '👥 社团' : groupKey === 'running' ? '🏃 跑步' : '🧭 探索'} ${completed}/${quests.length}</div>`;
+        groupHtml += quests.map(q => {
+          const style = SIDE_QUEST_STYLE[q.type] || SIDE_QUEST_STYLE.SIDE;
+          const typeClass = `side-type-${q.type === 'club' ? 'club' : q.type === 'running' ? 'running' : 'exploration'}`;
+          const statusClass = `tag-${q.status}`;
+          const rewards = q.rewards || {};
+          const rewardParts = [];
+          if (rewards.experience) rewardParts.push(`⭐${rewards.experience}`);
+          if (rewards.money) rewardParts.push(`💰${rewards.money}`);
+          if (rewards.knowledge) rewardParts.push(`📚${rewards.knowledge}`);
+          if (rewards.social) rewardParts.push(`🤝${rewards.social}`);
+          if (rewards.stamina) rewardParts.push(`💪${rewards.stamina}`);
+          if (rewards.mood) rewardParts.push(`😊${rewards.mood}`);
+          return `<div class="quest-card">
+            <h3>
+              <span class="side-type ${typeClass}">${style.icon} ${style.label}</span>
+              <span class="tag ${statusClass}">${q.status}</span>
+              ${q.title}
+            </h3>
+            <div><small>${q.description}</small></div>
+            <div class="status-line">📍 ${q.locationName} · 前置：${q.prerequisites.length ? q.prerequisites.join(', ') : '无'} · 奖励：${rewardParts.join(' ') || '无'}</div>
+          </div>`;
+        }).join('');
+        return groupHtml;
+      }).join('');
+      container.innerHTML = html;
+    }
+
+    window.debugRunClubQuestline = async function() {
+      clearLog();
+      logLine('开始一键完成社团支线');
+      const res = await questTriggerManager.debugRunSideQuestline('club');
+      res.results.forEach((r, idx) => {
+        logLine(`${idx + 1}. ${r.message}`, r.success);
+      });
+      refreshUI();
+      showToast(res.success ? '✅ 社团支线完成' : '❌ 社团支线失败', res.success ? '#f59e0b' : '#ef4444');
+      return res;
+    };
+
+    window.debugRunRunningQuestline = async function() {
+      clearLog();
+      logLine('开始一键完成跑步支线');
+      const res = await questTriggerManager.debugRunSideQuestline('running');
+      res.results.forEach((r, idx) => {
+        logLine(`${idx + 1}. ${r.message}`, r.success);
+      });
+      refreshUI();
+      showToast(res.success ? '✅ 跑步支线完成' : '❌ 跑步支线失败', res.success ? '#10b981' : '#ef4444');
+      return res;
+    };
+
+    window.debugRunExplorationQuestline = async function() {
+      clearLog();
+      logLine('开始一键完成探索支线');
+      const res = await questTriggerManager.debugRunSideQuestline('exploration');
+      res.results.forEach((r, idx) => {
+        logLine(`${idx + 1}. ${r.message}`, r.success);
+      });
+      refreshUI();
+      showToast(res.success ? '✅ 探索支线完成' : '❌ 探索支线失败', res.success ? '#3b82f6' : '#ef4444');
+      return res;
+    };
+
+    window.debugResetSideQuests = function() {
+      clearLog();
+      const res = questTriggerManager.resetSideQuests();
+      logLine(res.message, true);
+      refreshUI();
+      showToast('🔄 支线进度已重置', '#f59e0b');
+      return res;
+    };
+
+    window.debugExportFullProgress = function() {
+      const progress = questTriggerManager.exportProgress();
+      const panel = document.getElementById('snapshotPanel');
+      panel.textContent = JSON.stringify(progress, null, 2);
+      logLine('已导出完整 progress 到快照面板', true);
+      showToast('📤 导出完成', '#3b82f6');
+      return progress;
+    };
+
+    window.debugSaveProgress = function() {
+      if (window.saveManager) window.saveManager.save();
+      refreshUI();
+      showToast('💾 已保存到本地存储', '#3b82f6');
+      return { success: true };
+    };
+
+    window.debugRefreshUI = refreshUI;
+
+    initDebug();
+  </script>
+</body>
+</html>

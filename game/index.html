@@ -1,0 +1,2632 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <link rel="icon" href="data:,">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HUST World - 华中科技大学校园模拟游戏</title>
+    
+    <!-- ===== HUST WORLD 统一 UI 主题 ===== -->
+    <link rel="stylesheet" href="/game/css/ui-theme.css?v=1" />
+    <link rel="stylesheet" href="/game/css/game-dashboard.css?v=1" />
+    <link rel="stylesheet" href="/game/css/gameplay-panels.css?v=1" />
+    <link rel="stylesheet" href="/game/css/responsive-motion.css?v=1" />
+    <link rel="stylesheet" href="/game/css/campus-week.css?v=1" />
+    
+    <!-- ===== 原始地图系统样式（100% 保留） ===== -->
+    <link rel="stylesheet" href="/map/css/style.css?v=12" />
+    
+    <!-- ===== 开始界面样式 ===== -->
+    <style>
+        /* ========== 开始界面 ========== */
+        .start-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 60000;
+        background: url('assets/hust_campus.png') center/cover no-repeat;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        animation: start-screen-in 0.8s ease-out;
+    }
+        
+        .start-screen::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(
+                135deg,
+                rgba(10, 14, 39, 0.85) 0%,
+                rgba(20, 26, 55, 0.75) 30%,
+                rgba(30, 35, 65, 0.7) 50%,
+                rgba(20, 26, 55, 0.75) 70%,
+                rgba(10, 14, 39, 0.85) 100%
+            );
+            backdrop-filter: blur(4px);
+        }
+        
+        .start-screen::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(255, 215, 0, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(67, 199, 214, 0.06) 0%, transparent 50%);
+            animation: start-glow 4s ease-in-out infinite;
+        }
+        
+        @keyframes start-screen-in {
+            from {
+                opacity: 0;
+                transform: scale(1.05);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        @keyframes start-glow {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+        
+        .start-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            animation: start-content-in 1s ease-out 0.3s both;
+        }
+        
+        @keyframes start-content-in {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .game-logo {
+            width: 140px;
+            height: 140px;
+            margin: 0 auto 30px;
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 215, 0, 0.05));
+            border: 3px solid rgba(255, 215, 0, 0.4);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 80px;
+            box-shadow: 
+                0 0 60px rgba(255, 215, 0, 0.25),
+                inset 0 0 40px rgba(255, 215, 0, 0.1);
+            animation: logo-float 3s ease-in-out infinite;
+        }
+        
+        @keyframes logo-float {
+            0%, 100% {
+                transform: translateY(0) scale(1);
+                box-shadow: 
+                    0 0 60px rgba(255, 215, 0, 0.25),
+                    inset 0 0 40px rgba(255, 215, 0, 0.1);
+            }
+            50% {
+                transform: translateY(-10px) scale(1.02);
+                box-shadow: 
+                    0 0 80px rgba(255, 215, 0, 0.35),
+                    inset 0 0 50px rgba(255, 215, 0, 0.15);
+            }
+        }
+        
+        .game-title {
+            font-size: 72px;
+            font-weight: 900;
+            color: var(--hw-gold);
+            text-shadow: 
+                0 0 40px rgba(245, 197, 66, 0.45),
+                0 4px 10px rgba(0, 0, 0, 0.5),
+                0 0 80px rgba(245, 197, 66, 0.25);
+            letter-spacing: 12px;
+            margin-bottom: 12px;
+            font-family: var(--hw-font-serif);
+            line-height: 1.1;
+        }
+        
+        .game-subtitle {
+            font-size: 16px;
+            color: var(--hw-text-muted);
+            letter-spacing: 8px;
+            margin-bottom: 52px;
+            font-family: var(--hw-font-sans);
+        }
+        
+        .start-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            align-items: center;
+            width: min(340px, 88vw);
+        }
+        
+        .start-btn {
+            width: 100%;
+            padding: 16px 32px;
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            font-family: var(--hw-font-sans);
+        }
+        
+        .start-btn.continue {
+            background: linear-gradient(135deg, var(--hw-gold), var(--hw-gold-dark));
+            color: var(--hw-bg-dark);
+            box-shadow: var(--hw-shadow-glow-gold);
+        }
+        
+        .start-btn.continue:hover {
+            transform: translateY(-3px) scale(1.01);
+            box-shadow: 0 0 40px rgba(245, 197, 66, 0.4), 0 12px 24px rgba(0, 0, 0, 0.35);
+        }
+        
+        .start-btn.new {
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--hw-text);
+            border: 1px solid var(--hw-border);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+        }
+        
+        .start-btn.new:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--hw-border-active);
+            color: var(--hw-gold);
+            transform: translateY(-3px) scale(1.01);
+            box-shadow: 0 0 24px rgba(245, 197, 66, 0.2), 0 12px 24px rgba(0, 0, 0, 0.35);
+        }
+        
+        .start-btn:active {
+            transform: translateY(-1px) scale(0.99);
+        }
+        
+        .saved-info {
+            margin-top: 8px;
+            font-size: 13px;
+            color: var(--hw-text-muted);
+            letter-spacing: 0.5px;
+            line-height: 1.6;
+        }
+        
+        .saved-info strong {
+            color: var(--hw-gold);
+            font-weight: 600;
+        }
+        
+        .start-status-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 14px;
+            font-size: 13px;
+            color: var(--hw-text-muted);
+        }
+        
+        .start-status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--hw-text-muted);
+            box-shadow: 0 0 6px currentColor;
+        }
+        
+        .start-status-dot.guest {
+            background: var(--hw-vivid-green);
+            box-shadow: 0 0 8px rgba(0, 201, 167, 0.5);
+        }
+        
+        .start-status-dot.logged-in {
+            background: var(--hw-hust-blue-light);
+            box-shadow: 0 0 8px rgba(30, 111, 223, 0.5);
+        }
+        
+        .start-footer {
+            position: absolute;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            color: var(--hw-text-muted);
+            font-size: 12px;
+            letter-spacing: 2px;
+        }
+        
+        /* 移动端适配 */
+        @media (max-width: 768px) {
+            .game-logo {
+                width: 100px;
+                height: 100px;
+                font-size: 60px;
+            }
+            
+            .game-title {
+                font-size: 36px;
+                letter-spacing: 4px;
+            }
+            
+            .game-subtitle {
+                font-size: 14px;
+                letter-spacing: 3px;
+            }
+            
+            .start-btn {
+                width: 240px;
+                padding: 15px 30px;
+                font-size: 16px;
+            }
+            
+            .saved-info {
+                font-size: 12px;
+            }
+        }
+    </style>
+    
+    <!-- ===== 融合系统样式 ===== -->
+    <style>
+        /* ========== 全局变量 ========== */
+        :root {
+            --gold: #FFD700;
+            --gold-light: #FFE55C;
+            --gold-dark: #B8960F;
+            --hust-blue: #0042ba;
+            --hust-blue-deep: #061a46;
+            --cyan: #43c7d6;
+            --surface: rgba(20, 22, 40, 0.95);
+            --border: rgba(255,255,255,0.08);
+            --border-active: rgba(255,215,0,0.35);
+            --shadow-lg: 0 16px 48px rgba(0,0,0,0.5);
+            --shadow-gold: 0 0 40px rgba(255,215,0,0.3);
+        }
+        
+        /* ========== 加载屏幕 ========== */
+        .loading-screen {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: 
+                radial-gradient(circle at 20% 35%, rgba(67, 199, 214, 0.08), transparent 40%),
+                radial-gradient(circle at 80% 65%, rgba(255, 215, 0, 0.06), transparent 40%),
+                radial-gradient(ellipse at center, #141e30 0%, #0a0a16 70%);
+            z-index: 50000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+        }
+        .loading-screen::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: 
+                linear-gradient(45deg, transparent 48%, rgba(255,255,255,0.02) 50%, transparent 52%),
+                linear-gradient(-45deg, transparent 48%, rgba(255,255,255,0.02) 50%, transparent 52%);
+            background-size: 60px 60px;
+            animation: grid-move 20s linear infinite;
+            pointer-events: none;
+        }
+        @keyframes grid-move {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(60px, 60px); }
+        }
+        .loading-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+            visibility: hidden;
+        }
+        .loading-logo {
+            width: 100px;
+            height: 100px;
+            border: 3px solid var(--gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 42px;
+            margin-bottom: 28px;
+            box-shadow: 
+                0 0 60px rgba(255,215,0,0.2),
+                inset 0 0 30px rgba(255,215,0,0.1);
+            animation: logo-float 3s ease-in-out infinite, logo-glow 2s ease-in-out infinite;
+            position: relative;
+            background: radial-gradient(circle, rgba(255,215,0,0.1) 0%, transparent 70%);
+        }
+        .loading-logo::after {
+            content: '';
+            position: absolute;
+            top: -3px; left: -3px; right: -3px; bottom: -3px;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, transparent, var(--gold), transparent, var(--gold-light), transparent);
+            animation: logo-rotate 4s linear infinite;
+            opacity: 0.5;
+            filter: blur(8px);
+        }
+        @keyframes logo-float {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-12px) scale(1.02); }
+        }
+        @keyframes logo-glow {
+            0%, 100% { box-shadow: 0 0 60px rgba(255,215,0,0.2), inset 0 0 30px rgba(255,215,0,0.1); }
+            50% { box-shadow: 0 0 80px rgba(255,215,0,0.35), inset 0 0 40px rgba(255,215,0,0.2); }
+        }
+        @keyframes logo-rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .loading-title {
+            color: var(--gold);
+            font-size: 48px;
+            font-weight: 900;
+            font-family: 'Microsoft YaHei', sans-serif;
+            letter-spacing: 8px;
+            margin-bottom: 8px;
+            text-shadow: 
+                0 0 40px rgba(255, 215, 0, 0.4),
+                0 0 80px rgba(255, 215, 0, 0.2);
+            animation: title-pulse 3s ease-in-out infinite;
+            position: relative;
+        }
+        @keyframes title-pulse {
+            0%, 100% { text-shadow: 0 0 40px rgba(255, 215, 0, 0.4), 0 0 80px rgba(255, 215, 0, 0.2); }
+            50% { text-shadow: 0 0 60px rgba(255, 215, 0, 0.6), 0 0 120px rgba(255, 215, 0, 0.3); }
+        }
+        .loading-subtitle {
+            color: #9ca3af;
+            font-size: 15px;
+            font-family: 'Microsoft YaHei', sans-serif;
+            letter-spacing: 4px;
+            margin-bottom: 40px;
+            text-shadow: 0 0 20px rgba(67, 199, 214, 0.3);
+        }
+        .loading-bar {
+            width: 300px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.3);
+        }
+        .loading-bar::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            animation: bar-sweep 2s ease-in-out infinite;
+        }
+        @keyframes bar-sweep {
+            0%, 100% { transform: translateX(-100%); }
+            50% { transform: translateX(100%); }
+        }
+        .loading-bar-fill {
+            height: 100%;
+            background: 
+                linear-gradient(90deg, #B8960F, var(--gold), var(--gold-light), var(--gold), #B8960F);
+            background-size: 300% 100%;
+            border-radius: 4px;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: bar-shimmer 3s linear infinite;
+            box-shadow: 
+                0 0 20px rgba(255,215,0,0.5),
+                0 0 40px rgba(255,215,0,0.3);
+            position: relative;
+        }
+        .loading-bar-fill::after {
+            content: '';
+            position: absolute;
+            top: 0; right: 0;
+            width: 3px;
+            height: 100%;
+            background: rgba(255,255,255,0.8);
+            box-shadow: 0 0 15px rgba(255,255,255,0.8);
+        }
+        @keyframes bar-shimmer {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 300% 50%; }
+        }
+        .loading-text {
+            color: #6b7280;
+            font-size: 13px;
+            font-family: 'Microsoft YaHei', sans-serif;
+            margin-top: 18px;
+            letter-spacing: 2px;
+            transition: color 0.3s ease;
+        }
+        
+        /* ========== 角色创建面板 ========== */
+        .character-creation-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(5, 5, 16, 0.92);
+            backdrop-filter: blur(12px) saturate(1.2);
+            z-index: 10000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: overlay-fade-in 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        @keyframes overlay-fade-in {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .character-creation-panel {
+            background: 
+                linear-gradient(160deg, rgba(26, 29, 53, 0.95) 0%, rgba(18, 20, 42, 0.98) 40%, rgba(26, 29, 53, 0.95) 100%),
+                radial-gradient(circle at 30% 20%, rgba(67, 199, 214, 0.05), transparent 40%),
+                radial-gradient(circle at 70% 80%, rgba(255, 215, 0, 0.04), transparent 40%);
+            border: 1px solid rgba(255,215,0,0.12);
+            border-radius: 28px;
+            padding: 50px 46px 38px;
+            width: 480px;
+            max-height: 90vh;
+            overflow-y: auto;
+            color: #e5e7eb;
+            font-family: 'Microsoft YaHei', sans-serif;
+            box-shadow: 
+                0 30px 80px rgba(0,0,0,0.6),
+                0 0 120px rgba(255,215,0,0.08),
+                inset 0 1px 0 rgba(255,255,255,0.08);
+            position: relative;
+            animation: panel-slide-up 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        @keyframes panel-slide-up {
+            from { opacity: 0; transform: translateY(40px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .character-creation-panel::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--gold), var(--cyan), var(--gold), transparent);
+            border-radius: 28px 28px 0 0;
+        }
+        .character-creation-panel h2 {
+            text-align: center;
+            color: var(--gold);
+            margin-bottom: 34px;
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: 3px;
+            text-shadow: 0 0 30px rgba(255,215,0,0.3);
+            position: relative;
+        }
+        .character-creation-panel h2::after {
+            content: '';
+            position: absolute;
+            bottom: -12px; left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+        }
+        .form-group {
+            margin-bottom: 26px;
+            position: relative;
+        }
+        .form-group label {
+            display: block;
+            color: #9ca3af;
+            margin-bottom: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 15px 16px;
+            background: rgba(255,255,255,0.03);
+            border: 1.5px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            color: #e5e7eb;
+            font-size: 15px;
+            font-family: 'Microsoft YaHei', sans-serif;
+            outline: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-sizing: border-box;
+        }
+        .form-group input::placeholder {
+            color: #4b5563;
+        }
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: var(--gold);
+            background: rgba(255,215,0,0.03);
+            box-shadow: 
+                0 0 0 4px rgba(255,215,0,0.08),
+                0 0 20px rgba(255,215,0,0.15);
+            transform: translateY(-1px);
+        }
+        .form-group select option {
+            background: #1a1d35;
+            color: #e5e7eb;
+        }
+        .gender-buttons {
+            display: flex;
+            gap: 12px;
+        }
+        .gender-btn {
+            flex: 1;
+            padding: 15px;
+            background: rgba(255,255,255,0.02);
+            border: 1.5px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            color: #9ca3af;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .gender-btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg, rgba(255,215,0,0.08), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .gender-btn:hover {
+            background: rgba(255,215,0,0.05);
+            border-color: rgba(255,215,0,0.3);
+            color: #e5e7eb;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255,215,0,0.15);
+        }
+        .gender-btn:hover::before {
+            opacity: 1;
+        }
+        .gender-btn.selected {
+            background: linear-gradient(135deg, rgba(255,215,0,0.15), rgba(255,215,0,0.05));
+            border-color: var(--gold);
+            color: var(--gold);
+            font-weight: 700;
+            box-shadow: 
+                0 0 0 3px rgba(255,215,0,0.1),
+                0 8px 24px rgba(255,215,0,0.2);
+            transform: translateY(-2px);
+        }
+        .create-btn {
+            width: 100%;
+            padding: 17px;
+            background: linear-gradient(135deg, #D4A017, var(--gold), #D4A017);
+            background-size: 200% 100%;
+            color: #12142a;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-top: 16px;
+            letter-spacing: 1.5px;
+            box-shadow: 
+                0 6px 20px rgba(255,215,0,0.25),
+                0 0 40px rgba(255,215,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        .create-btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%; right: -100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s ease;
+        }
+        .create-btn:hover:not(:disabled)::before {
+            left: 100%;
+        }
+        .create-btn:hover:not(:disabled) {
+            background-position: 200% 0;
+            transform: translateY(-3px);
+            box-shadow: 
+                0 10px 30px rgba(255,215,0,0.35),
+                0 0 60px rgba(255,215,0,0.2);
+        }
+        .create-btn:active:not(:disabled) {
+            transform: translateY(-1px);
+        }
+        .create-btn:disabled {
+            background: rgba(255,255,255,0.05);
+            color: #4b5563;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+            border: 1.5px solid rgba(255,255,255,0.05);
+        }
+        
+        /* ========== 性格测试问答面板 ========== */
+        .quiz-panel {
+            display: none;
+        }
+        .quiz-panel.active {
+            display: block;
+            animation: quiz-fade-in 0.4s ease;
+        }
+        @keyframes quiz-fade-in {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .quiz-progress-bar {
+            width: 100%;
+            height: 5px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 3px;
+            margin-bottom: 22px;
+            overflow: hidden;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.3);
+        }
+        .quiz-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--gold), var(--gold-light), var(--gold));
+            background-size: 200% 100%;
+            border-radius: 3px;
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 20px rgba(255,215,0,0.4);
+            animation: progress-shimmer 2s linear infinite;
+        }
+        @keyframes progress-shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        .quiz-question {
+            font-size: 16px;
+            color: #e5e7eb;
+            margin-bottom: 20px;
+            line-height: 1.7;
+            font-weight: 600;
+            text-align: center;
+            padding: 10px;
+        }
+        .quiz-option {
+            display: block;
+            width: 100%;
+            padding: 16px 18px;
+            margin-bottom: 10px;
+            background: rgba(255,255,255,0.02);
+            border: 1.5px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            color: #9ca3af;
+            font-size: 15px;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: 'Microsoft YaHei', sans-serif;
+            position: relative;
+            overflow: hidden;
+        }
+        .quiz-option::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 3px; height: 100%;
+            background: var(--gold);
+            transform: scaleY(0);
+            transition: transform 0.25s ease;
+        }
+        .quiz-option:hover {
+            background: rgba(255,215,0,0.05);
+            border-color: rgba(255,215,0,0.3);
+            color: #e5e7eb;
+            transform: translateX(4px);
+            box-shadow: 0 4px 12px rgba(255,215,0,0.1);
+        }
+        .quiz-option:hover::before {
+            transform: scaleY(1);
+        }
+        .quiz-result {
+            text-align: center;
+            padding: 20px 0;
+        }
+        .quiz-result h3 {
+            color: var(--gold);
+            font-size: 20px;
+            margin-bottom: 20px;
+            font-weight: 800;
+            text-shadow: 0 0 20px rgba(255,215,0,0.3);
+        }
+        .quiz-score-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 14px;
+            margin-bottom: 8px;
+            background: rgba(255,255,255,0.02);
+            border-radius: 10px;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            border: 1.5px solid transparent;
+        }
+        .quiz-score-row:hover {
+            background: rgba(255,255,255,0.04);
+            transform: translateX(4px);
+        }
+        .quiz-score-name {
+            color: #9ca3af;
+            font-weight: 600;
+        }
+        .quiz-score-stars {
+            color: var(--gold);
+            font-size: 16px;
+            text-shadow: 0 0 10px rgba(255,215,0,0.3);
+        }
+        .quiz-recommend {
+            margin-top: 18px;
+            padding: 16px;
+            background: linear-gradient(135deg, rgba(255,215,0,0.1), rgba(255,215,0,0.05));
+            border-radius: 12px;
+            color: var(--gold);
+            font-size: 15px;
+            font-weight: 700;
+            border: 1.5px solid rgba(255,215,0,0.2);
+            box-shadow: 0 0 30px rgba(255,215,0,0.1);
+        }
+        
+        #skip-all-btn {
+            background: transparent !important;
+            border: 1.5px solid rgba(255,255,255,0.1) !important;
+            color: #6b7280 !important;
+            cursor: pointer !important;
+            font-size: 13px !important;
+            padding: 10px 20px !important;
+            border-radius: 8px !important;
+            transition: all 0.25s ease !important;
+        }
+        #skip-all-btn:hover {
+            border-color: rgba(255,255,255,0.25) !important;
+            color: #9ca3af !important;
+            background: rgba(255,255,255,0.03) !important;
+        }
+        
+        /* ========== 任务触发提示 ========== */
+        #quest-trigger-prompt {
+            animation: quest-prompt-pulse 2.2s ease-in-out infinite;
+        }
+        @keyframes quest-prompt-pulse {
+            0%, 100% { box-shadow: 0 0 12px rgba(76, 175, 80, 0.15); }
+            50% { box-shadow: 0 0 24px rgba(76, 175, 80, 0.35); }
+        }
+        
+        /* ========== 任务状态栏滚动条 ========== */
+        #quest-status-bar::-webkit-scrollbar { width: 3px; }
+        #quest-status-bar::-webkit-scrollbar-track { background: transparent; }
+        #quest-status-bar::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.12);
+            border-radius: 2px;
+        }
+        
+        /* ========== Toast 统一样式 ========== */
+        .quest-toast {
+            animation: toast-slide-in 0.3s ease-out;
+        }
+        @keyframes toast-slide-in {
+            from { opacity: 0; transform: translateX(-50%) translateY(16px) scale(0.95); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+        }
+        
+        /* ========== 战斗系统 · 主线战斗系统原版UI ========== */
+        .battle-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 20000;
+            display: flex; justify-content: center; align-items: center;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            animation: battle-overlay-in 0.3s ease-out;
+        }
+        @keyframes battle-overlay-in {
+            from { background: rgba(26,26,46,0); }
+            to { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); }
+        }
+
+        .battle-container {
+            width: 1200px;
+            height: 850px;
+            position: relative;
+            background: #1a1a2e;
+            border-radius: 10px;
+            border: 2px solid #333;
+            box-shadow: 0 0 30px rgba(0,0,0,0.5);
+            animation: battle-panel-in 0.35s cubic-bezier(0.22, 0.61, 0.36, 1);
+            font-family: 'Microsoft YaHei', 'Arial', sans-serif;
+            color: white;
+            overflow: hidden;
+        }
+        @keyframes battle-panel-in {
+            from { opacity: 0; transform: scale(0.92) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .battle-bg {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url('assets/battle/战斗背景.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        .battle-bg::before {
+            content: '';
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.75);
+        }
+        .battle-bg::after {
+            content: '';
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: 
+                radial-gradient(circle at 10% 10%, rgba(255, 215, 0, 0.03) 0%, transparent 50px),
+                radial-gradient(circle at 90% 90%, rgba(255, 152, 0, 0.03) 0%, transparent 50px),
+                radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.02) 0%, transparent 100px);
+        }
+
+        /* 屏幕闪光层 */
+        .battle-screen-flash {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 20001; pointer-events: none;
+            opacity: 0; transition: opacity 0.15s ease-out;
+        }
+        .battle-screen-flash.active {
+            opacity: 1;
+            transition: opacity 0s;
+        }
+
+        /* ========== 顶部信息栏 ========== */
+        .top-info-bar {
+            position: absolute;
+            top: 20px; left: 0; right: 0;
+            height: 80px;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 20px;
+            z-index: 2;
+        }
+
+        .player-info-bar {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 10px 20px;
+            background: rgba(33, 150, 243, 0.2);
+            border-radius: 10px;
+            border: 2px solid rgba(33, 150, 243, 0.5);
+        }
+        .player-sprite-small {
+            width: 50px; height: 50px;
+            background: linear-gradient(135deg, #2196F3, #1976D2);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 0 10px rgba(33,150,243,0.5);
+        }
+        .player-info-column {
+            display: flex; flex-direction: column; gap: 4px; min-width: 280px;
+        }
+        .player-info-row {
+            display: flex; align-items: center; gap: 15px;
+        }
+        .player-name {
+            font-size: 18px; font-weight: bold; color: #2196F3; min-width: 60px;
+        }
+        .player-level {
+            font-size: 14px; color: #FFD700;
+            padding: 4px 10px;
+            background: rgba(255, 215, 0, 0.2); border-radius: 15px;
+        }
+
+        .enemy-info-bar {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 10px 20px;
+            background: rgba(244, 67, 54, 0.2);
+            border-radius: 10px;
+            border: 2px solid rgba(244, 67, 54, 0.5);
+        }
+        .enemy-info-column {
+            display: flex; flex-direction: column; gap: 4px; min-width: 280px;
+        }
+        .enemy-info-row {
+            display: flex; align-items: center; gap: 15px;
+        }
+        .enemy-sprite-small {
+            width: 50px; height: 50px;
+            background-size: cover;
+            background-position: center;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 0 10px rgba(244,67,54,0.5);
+        }
+        .enemy-name {
+            font-size: 18px; font-weight: bold; color: #f44336; min-width: 60px; text-align: right;
+        }
+        .enemy-level {
+            font-size: 14px; color: #FFD700;
+            padding: 4px 10px;
+            background: rgba(255, 215, 0, 0.2); border-radius: 15px;
+        }
+
+        /* ========== 血条 ========== */
+        .hp-bar-container {
+            width: 150px; height: 24px;
+            background: linear-gradient(180deg, #2D2D2D, #1A1A1A);
+            border-radius: 15px; overflow: hidden;
+            border: 3px solid #4CAF50;
+            box-shadow: 
+                0 4px 0 #2E7D32,
+                0 6px 15px rgba(76, 175, 80, 0.3),
+                inset 0 2px 4px rgba(255,255,255,0.1);
+            position: relative;
+        }
+        .hp-bar-container::before {
+            content: '';
+            position: absolute; top: 2px; left: 5px; right: 5px; height: 40%;
+            background: linear-gradient(180deg, rgba(255,255,255,0.2) 0%, transparent 100%);
+            border-radius: 10px 10px 0 0;
+            pointer-events: none;
+        }
+        .hp-bar {
+            height: 100%;
+            transition: width 0.5s ease;
+            border-radius: 12px;
+            position: relative; overflow: hidden;
+        }
+        .hp-bar::after {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; height: 100%;
+            background: repeating-linear-gradient(
+                45deg, transparent, transparent 8px,
+                rgba(255,255,255,0.1) 8px, rgba(255,255,255,0.1) 16px
+            );
+            animation: barShimmer 2s linear infinite;
+        }
+        @keyframes barShimmer {
+            0% { transform: translateX(-16px); }
+            100% { transform: translateX(16px); }
+        }
+        .hp-bar.player {
+            background: linear-gradient(90deg, #2E7D32, #4CAF50, #66BB6A);
+            box-shadow: inset 0 2px 4px rgba(255,255,255,0.3), inset 0 -2px 4px rgba(0,0,0,0.2);
+        }
+        .hp-bar.enemy {
+            background: linear-gradient(90deg, #C62828, #f44336, #EF5350);
+            box-shadow: inset 0 2px 4px rgba(255,255,255,0.3), inset 0 -2px 4px rgba(0,0,0,0.2);
+        }
+        .hp-bar-container.enemy-hp {
+            border-color: #f44336;
+            box-shadow: 
+                0 4px 0 #C62828,
+                0 6px 15px rgba(244, 67, 54, 0.3),
+                inset 0 2px 4px rgba(255,255,255,0.1);
+        }
+        .hp-bar.low {
+            animation: pulseRed 0.8s ease-in-out infinite;
+        }
+        @keyframes pulseRed {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+        .hp-text {
+            font-size: 12px; color: #fff; margin-top: 3px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5); font-weight: bold;
+        }
+
+        /* ========== 熟练度条（替代智力条） ========== */
+        .prof-bar-container {
+            width: 150px; height: 20px;
+            background: linear-gradient(180deg, #1A237E, #0D1033);
+            border-radius: 12px; overflow: hidden;
+            border: 3px solid #9C27B0;
+            box-shadow: 
+                0 4px 0 #7B1FA2,
+                0 6px 15px rgba(156, 39, 176, 0.3),
+                inset 0 2px 4px rgba(255,255,255,0.1);
+            position: relative;
+        }
+        .prof-bar-container::before {
+            content: '';
+            position: absolute; top: 2px; left: 5px; right: 5px; height: 40%;
+            background: linear-gradient(180deg, rgba(255,255,255,0.2) 0%, transparent 100%);
+            border-radius: 8px 8px 0 0;
+            pointer-events: none;
+        }
+        .prof-bar {
+            height: 100%;
+            transition: width 0.5s ease;
+            border-radius: 10px;
+            background: linear-gradient(90deg, #7B1FA2, #9C27B0, #CE93D8);
+            box-shadow: inset 0 2px 4px rgba(255,255,255,0.3), inset 0 -2px 4px rgba(0,0,0,0.2);
+            position: relative; overflow: hidden;
+        }
+        .prof-bar::after {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; height: 100%;
+            background: repeating-linear-gradient(
+                45deg, transparent, transparent 8px,
+                rgba(255,255,255,0.15) 8px, rgba(255,255,255,0.15) 16px
+            );
+            animation: barShimmer 2s linear infinite;
+        }
+        .prof-text {
+            font-size: 11px; color: #E1BEE7; margin-top: 3px;
+            min-width: 60px; text-shadow: 1px 1px 2px rgba(0,0,0,0.5); font-weight: bold;
+        }
+        .player-prof-row {
+            display: flex; align-items: center; gap: 15px;
+            padding-left: 135px;
+        }
+
+        /* ========== 战斗场景区域 ========== */
+        .battle-field {
+            position: absolute;
+            top: 140px; left: 0; right: 0; bottom: 140px;
+            display: flex; justify-content: center; align-items: center;
+            gap: 150px;
+            z-index: 2;
+        }
+        .player-buff-container {
+            position: relative;
+            display: flex; flex-direction: column; align-items: center;
+        }
+        .player-avatar {
+            width: 160px; height: 160px;
+            background: linear-gradient(135deg, #2196F3, #1976D2);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 72px;
+            box-shadow: 0 0 30px rgba(33,150,243,0.6);
+            border: 4px solid #42A5F5;
+            transition: transform 0.3s ease;
+        }
+        .enemy-avatar {
+            width: 160px; height: 160px;
+            background-size: cover;
+            background-position: center;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 72px;
+            box-shadow: 0 0 30px rgba(244,67,54,0.6);
+            border: 4px solid #EF5350;
+            transition: transform 0.3s ease;
+        }
+        .enemy-avatar.boss {
+            box-shadow: 0 0 40px rgba(156,39,176,0.8);
+            animation: bossGlow 2s ease-in-out infinite;
+        }
+        @keyframes bossGlow {
+            0%, 100% { box-shadow: 0 0 40px rgba(156,39,176,0.8); }
+            50% { box-shadow: 0 0 60px rgba(156,39,176,1.0); }
+        }
+
+        .buff-icons {
+            display: flex; gap: 8px; margin-top: 10px; min-height: 40px;
+        }
+        .buff-icon {
+            width: 36px; height: 36px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            cursor: help; transition: transform 0.2s; position: relative;
+        }
+        .buff-count {
+            position: absolute; bottom: -5px; right: -5px;
+            background: #FFD700; color: #333; font-size: 12px; font-weight: bold;
+            padding: 1px 5px; border-radius: 10px;
+            border: 2px solid white; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+            min-width: 18px; text-align: center;
+        }
+        .buff-icon:hover { transform: scale(1.2); }
+        .buff-icon.buff-appear { animation: buffAppear 0.3s ease-out; }
+        .buff-icon.buff-disappear { animation: buffDisappear 0.3s ease-out forwards; }
+        .buff-icon.enemy-buff {
+            background: rgba(220, 38, 38, 0.25);
+            border-color: rgba(239, 68, 68, 0.6);
+        }
+        @keyframes buffAppear {
+            0% { opacity: 0; transform: scale(0) rotate(-180deg); }
+            100% { opacity: 1; transform: scale(1) rotate(0deg); }
+        }
+        @keyframes buffDisappear {
+            0% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(0); }
+        }
+
+        .vs-badge {
+            font-size: 48px; font-weight: bold; color: #FFD700;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+
+        /* ========== 技能栏 ========== */
+        .skill-bar {
+            position: absolute;
+            bottom: 15px; left: 300px; right: 180px;
+            display: flex; justify-content: center; gap: 15px;
+            z-index: 2;
+        }
+        .skill-button {
+            width: 170px;
+            padding: 22px 18px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 25px;
+            font-size: 16px; font-weight: 800;
+            color: white; cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative; overflow: hidden;
+            background: linear-gradient(135deg, #4FC3F7, #2196F3);
+            box-shadow: 
+                0 6px 0 rgba(0,0,0,0.2),
+                0 8px 20px rgba(0,0,0,0.15),
+                inset 0 2px 0 rgba(255,255,255,0.3);
+            text-shadow: 
+                2px 2px 0 rgba(0,0,0,0.3),
+                -1px -1px 0 rgba(255,255,255,0.2);
+            font-family: 'Microsoft YaHei', 'Comic Sans MS', sans-serif;
+            letter-spacing: 1px;
+        }
+        .skill-button::before {
+            content: '';
+            position: absolute; top: 5px; left: 10px; right: 10px; height: 30%;
+            background: linear-gradient(180deg, rgba(255,255,255,0.3) 0%, transparent 100%);
+            border-radius: 20px 20px 0 0;
+        }
+        .skill-button.skill-damage { background: linear-gradient(135deg, #4FC3F7, #2196F3); }
+        .skill-button.skill-heal { background: linear-gradient(135deg, #66BB6A, #43A047); }
+        .skill-button.skill-buff { background: linear-gradient(135deg, #FFB74D, #F57C00); }
+        .skill-button.skill-debuff { background: linear-gradient(135deg, #CE93D8, #9C27B0); }
+        .skill-button:hover { transform: translateY(-5px);
+            box-shadow: 0 10px 0 rgba(0,0,0,0.2), 0 15px 30px rgba(0,0,0,0.25), inset 0 2px 0 rgba(255,255,255,0.4);
+        }
+        .skill-button:active { transform: translateY(2px);
+            box-shadow: 0 3px 0 rgba(0,0,0,0.2), 0 5px 15px rgba(0,0,0,0.15), inset 0 2px 0 rgba(255,255,255,0.2);
+        }
+        .skill-button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        .skill-tag {
+            position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+            padding: 3px 12px; background: rgba(0,0,0,0.5); border-radius: 10px;
+            font-size: 12px;
+        }
+        .skill-damage-val {
+            font-size: 13px; opacity: 0.8; margin-top: 4px;
+        }
+
+        /* ========== 战斗日志 ========== */
+        .battle-log {
+            position: absolute;
+            bottom: 15px; left: 20px;
+            width: 260px; height: 150px;
+            background: rgba(0,0,0,0.7); border-radius: 8px;
+            padding: 12px; overflow-y: auto;
+            font-size: 12px;
+            z-index: 2;
+        }
+        .battle-log h3 {
+            font-size: 14px; color: #FFD700; margin-bottom: 10px;
+            border-bottom: 1px solid #444; padding-bottom: 5px;
+        }
+        .log-entry {
+            font-size: 13px; color: #ccc; margin: 5px 0; padding-left: 10px;
+            border-left: 3px solid #4CAF50;
+        }
+        .log-entry.enemy { border-left-color: #f44336; }
+        .log-entry.critical { color: #FFEB3B; font-weight: bold; }
+        .log-entry.victory { color: #4CAF50; font-weight: bold; }
+        .log-entry.defeat { color: #f44336; font-weight: bold; }
+
+        /* ========== 操作按钮 ========== */
+        .action-buttons {
+            position: absolute;
+            bottom: 15px; right: 20px;
+            display: flex; flex-direction: column; gap: 15px;
+            z-index: 2;
+        }
+        .action-button {
+            padding: 16px 28px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 25px;
+            font-size: 16px; font-weight: 800;
+            color: white; cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative; overflow: hidden;
+            box-shadow: 
+                0 6px 0 rgba(0,0,0,0.2),
+                0 8px 20px rgba(0,0,0,0.15),
+                inset 0 2px 0 rgba(255,255,255,0.3);
+            text-shadow: 2px 2px 0 rgba(0,0,0,0.3), -1px -1px 0 rgba(255,255,255,0.2);
+            font-family: 'Microsoft YaHei', sans-serif;
+            letter-spacing: 1px;
+        }
+        .action-button::before {
+            content: '';
+            position: absolute; top: 5px; left: 10px; right: 10px; height: 30%;
+            background: linear-gradient(180deg, rgba(255,255,255,0.3) 0%, transparent 100%);
+            border-radius: 20px 20px 0 0;
+        }
+        .action-button.flee {
+            background: linear-gradient(135deg, #FF7043, #E64A19); color: white;
+        }
+        .action-button.flee:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 0 rgba(0,0,0,0.2), 0 15px 30px rgba(0,0,0,0.25), inset 0 2px 0 rgba(255,255,255,0.4);
+        }
+        .action-button.flee:active { transform: translateY(2px);
+            box-shadow: 0 3px 0 rgba(0,0,0,0.2), 0 5px 15px rgba(0,0,0,0.15), inset 0 2px 0 rgba(255,255,255,0.2);
+        }
+        .action-button.flee:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* ========== 回合指示器 ========== */
+        .turn-indicator {
+            position: absolute;
+            top: 120px; left: 50%; transform: translateX(-50%);
+            padding: 8px 16px; border-radius: 15px;
+            font-size: 14px; font-weight: bold;
+            z-index: 2;
+        }
+        .turn-indicator.player-turn {
+            background: rgba(76,175,80,0.3); color: #4CAF50;
+            border: 1px solid #4CAF50;
+        }
+        .turn-indicator.enemy-turn {
+            background: rgba(244,67,54,0.3); color: #f44336;
+            border: 1px solid #f44336;
+        }
+
+        /* ========== 战斗结束面板 ========== */
+        .settlement-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 100; border-radius: 10px;
+        }
+        .settlement-panel {
+            width: 500px; padding: 40px; border-radius: 20px;
+            text-align: center; border: 3px solid;
+        }
+        .settlement-panel.win {
+            background: linear-gradient(135deg, #1e3a5f, #152238);
+            border-color: #4CAF50;
+            box-shadow: 0 0 30px rgba(76,175,80,0.3);
+        }
+        .settlement-panel.lose {
+            background: linear-gradient(135deg, #4a1a1a, #2d1010);
+            border-color: #f44336;
+            box-shadow: 0 0 30px rgba(244,67,54,0.3);
+        }
+        .settlement-panel.flee {
+            background: linear-gradient(135deg, #3a3a2f, #2d2d24);
+            border-color: #FFD700;
+            box-shadow: 0 0 30px rgba(255,215,0,0.3);
+        }
+        .settlement-title {
+            font-size: 48px; font-weight: bold; margin-bottom: 20px;
+            text-shadow: 0 0 20px;
+        }
+        .settlement-panel.win .settlement-title { color: #4CAF50; }
+        .settlement-panel.lose .settlement-title { color: #f44336; }
+        .settlement-panel.flee .settlement-title { color: #FFD700; }
+        .reward-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px 20px; margin: 10px 0;
+            background: rgba(255,255,255,0.1); border-radius: 10px;
+        }
+        .reward-label { font-size: 16px; color: #ccc; }
+        .reward-value { font-size: 18px; font-weight: bold; color: #FFD700; }
+        .continue-button {
+            margin-top: 30px; padding: 15px 40px;
+            border: none; border-radius: 10px;
+            font-size: 20px; font-weight: bold; color: white; cursor: pointer;
+            transition: all 0.3s;
+        }
+        .settlement-panel.win .continue-button { background: linear-gradient(135deg, #4CAF50, #388E3C); }
+        .settlement-panel.lose .continue-button { background: linear-gradient(135deg, #666, #555); }
+        .settlement-panel.flee .continue-button { background: linear-gradient(135deg, #FFD700, #FFA000); color: #333; }
+        .continue-button:hover { transform: scale(1.05); }
+
+        /* ========== 动画 ========== */
+        @keyframes playerAttack {
+            0% { transform: translateX(0); }
+            30% { transform: translateX(50px); }
+            50% { transform: translateX(80px); }
+            100% { transform: translateX(0); }
+        }
+        .player-avatar.attack { animation: playerAttack 0.6s ease-in-out; }
+        @keyframes enemyAttack {
+            0% { transform: translateX(0); }
+            30% { transform: translateX(-50px); }
+            50% { transform: translateX(-80px); }
+            100% { transform: translateX(0); }
+        }
+        .enemy-avatar.attack { animation: enemyAttack 0.6s ease-in-out; }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-8px); }
+            40% { transform: translateX(8px); }
+            60% { transform: translateX(-5px); }
+            80% { transform: translateX(5px); }
+        }
+        .enemy-avatar.hurt, .player-avatar.hurt { animation: shake 0.4s ease-in-out; }
+        @keyframes critFlash {
+            0%, 100% { filter: brightness(1) saturate(1); }
+            50% { filter: brightness(2) saturate(1.5) drop-shadow(0 0 20px #FFD700); }
+        }
+        .enemy-avatar.critical, .player-avatar.critical {
+            animation: critFlash 0.6s ease-in-out, shake 0.3s ease-in-out;
+        }
+        @keyframes healPulse {
+            0% { box-shadow: 0 0 30px rgba(76,175,80,0.6); }
+            50% { box-shadow: 0 0 60px rgba(76,175,80,1); }
+            100% { box-shadow: 0 0 30px rgba(76,175,80,0.6); }
+        }
+        .player-avatar.buffed { animation: healPulse 1s ease-in-out; }
+
+        /* 浮动伤害数字 */
+        @keyframes floatUp {
+            0% { opacity: 1; transform: translateY(0) scale(1); }
+            30% { opacity: 1; transform: translateY(-30px) scale(1.3); }
+            100% { opacity: 0; transform: translateY(-80px) scale(0.8); }
+        }
+        .battle-damage-float {
+            position: absolute; font-weight: 900; font-size: 22px;
+            pointer-events: none; z-index: 10;
+            animation: floatUp 0.9s ease-out forwards;
+            text-shadow: 0 2px 6px rgba(0,0,0,0.5);
+        }
+        .battle-damage-float.crit {
+            font-size: 30px; color: #FFD700 !important;
+            animation: floatUp 1.1s ease-out forwards;
+        }
+        .battle-damage-float.heal {
+            font-size: 20px; color: #4ade80 !important;
+            animation: floatUp 1s ease-out forwards;
+        }
+
+        /* 粒子特效 */
+        .battle-particle {
+            position: absolute; pointer-events: none; z-index: 11;
+            font-size: 18px;
+            animation: particle-rise 1.5s ease-out forwards;
+        }
+        @keyframes particle-rise {
+            0% { opacity: 1; transform: translateY(0) rotate(0deg) scale(1); }
+            50% { opacity: 0.8; transform: translateY(-60px) rotate(180deg) scale(0.8); }
+            100% { opacity: 0; transform: translateY(-120px) rotate(360deg) scale(0.4); }
+        }
+
+        /* ========== 响应式 ========== */
+        @media (max-width: 760px) {
+            .character-creation-panel {
+                width: 92%; padding: 28px 20px 24px;
+            }
+            #quest-trigger-panel { width: 95% !important; max-width: none !important; }
+            .loading-title { font-size: 28px; letter-spacing: 2px; }
+            .battle-container { width: 98%; height: 98vh; }
+            .battle-field { gap: 40px; }
+            .player-avatar, .enemy-avatar { width: 100px; height: 100px; font-size: 48px; }
+            .skill-bar { left: 10px; right: 10px; flex-wrap: wrap; gap: 8px; }
+            .skill-button { width: 120px; padding: 16px 10px; font-size: 13px; }
+            .action-buttons { right: 5px; gap: 8px; }
+            .action-button { padding: 12px 18px; font-size: 13px; }
+            .battle-log { width: 180px; height: 120px; }
+            .top-info-bar { padding: 0 5px; }
+            .player-info-bar, .enemy-info-bar { padding: 6px 10px; gap: 8px; }
+            .hp-bar-container { width: 100px; }
+        }
+    </style>
+    <link rel="stylesheet" href="/game/css/cinematic-polish.css?v=1" />
+</head>
+<body class="hw-game-page">
+    <!-- ========== 开始界面 ========== -->
+    <div id="start-screen" class="start-screen">
+        <div class="start-content">
+            <div class="game-title">HUST WORLD</div>
+            <div class="game-subtitle">华中科技大学 · 校园模拟</div>
+            
+            <div id="start-status-row" class="start-status-row" style="display:none;">
+                <span class="start-status-dot" id="start-status-dot"></span>
+                <span id="start-status-text"></span>
+            </div>
+            
+            <div class="start-buttons">
+                <button id="btn-continue" class="start-btn continue hw-button hw-button-primary" style="display:none;">
+                    继续旅程
+                </button>
+                <div id="saved-info" class="saved-info" style="display:none;"></div>
+                
+                <button id="btn-character-select" class="start-btn continue hw-button hw-button-primary" style="display:none;">
+                    选择角色
+                </button>
+                
+                <button id="btn-login" class="start-btn new hw-button hw-button-secondary" style="display:none;">
+                    登录 / 注册
+                </button>
+                
+                <button id="btn-new-game" class="start-btn new hw-button hw-button-secondary">
+                    开始游戏
+                </button>
+                
+                <button id="btn-logout" class="start-btn new hw-button hw-button-ghost" style="display:none;">
+                    退出登录
+                </button>
+            </div>
+        </div>
+        
+        <div class="start-footer">
+            WASD 移动 · E 交互 · J 任务日志
+        </div>
+    </div>
+    
+    <!-- ========== 加载屏幕 ========== -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-logo">🎓</div>
+        <div class="loading-title">HUST WORLD</div>
+        <div class="loading-subtitle">华中科技大学 · 校园模拟</div>
+        <div class="loading-bar">
+            <div id="loading-bar-fill" class="loading-bar-fill" style="width: 0%;"></div>
+        </div>
+        <div id="loading-text" class="loading-text">正在加载地图数据...</div>
+    </div>
+    
+    <!-- ========== 原始地图系统 DOM 结构（100% 保留，与 ljt_地图系统原版完全一致） ========== -->
+    <!-- 顶部标题栏 -->
+    <div class="top-bar">
+      <div class="brand-lockup">
+        <div>
+          <span class="game-title">HUST WORLD</span>
+          <span class="game-subtitle">华中科技大学开放世界地图</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 世界状态标识 -->
+    <div class="world-badge">
+      <span class="world-badge-kicker">OPEN WORLD</span>
+      <strong>华科校园探索地图</strong>
+      <span>慢速步行模式 · 可点击建筑 · 巴士传送</span>
+    </div>
+
+    <!-- 左下 HUD -->
+    <div class="hud" id="hud">
+      <div class="hud-title">当前位置</div>
+      <div class="hud-row"><span class="hud-label">坐标</span><span class="hud-val" id="hudXY">(0, 0)</span></div>
+      <div class="hud-row"><span class="hud-label">最近</span><span class="hud-val" id="hudNear">-</span></div>
+    </div>
+
+    <!-- 右下迷你工具栏 -->
+    <div class="mini-toolbar">
+      <button id="btnZoomIn" title="放大">＋</button>
+      <button id="btnZoomOut" title="缩小">－</button>
+      <button id="btnCollision" title="碰撞层">🟥</button>
+    </div>
+
+    <!-- 面板切换 -->
+    <button class="panel-toggle" id="panelToggle">☰</button>
+
+    <!-- 右侧滑出面板 -->
+    <div class="side-panel" id="sidePanel">
+      <h3>控制台</h3>
+      <div class="ctrl-row">
+        <button id="btnLabels" class="on">🏷️ 标签</button>
+        <button id="btnReset">🔄 重置</button>
+      </div>
+      <p class="hint">左键点击自动行走 | WASD 手动移动 | Shift 加速<br>滚轮缩放 | 靠近巴士站按 E 乘车</p>
+
+      <h3>地图筛选</h3>
+      <div class="type-tags" id="typeTags"></div>
+
+      <h3>地点索引</h3>
+      <div class="legend" id="legend"></div>
+      <div class="loc-list" id="locList"></div>
+
+      <h3 id="selTitle">点击地图选择位置</h3>
+      <div class="sel-info" id="selInfo">点击地图标记查看详情</div>
+    </div>
+
+    <!-- 巴士面板 -->
+    <div class="bus-overlay" id="busOverlay">
+      <div class="bus-panel" id="busPanel"></div>
+    </div>
+    
+    <!-- 小地图（由 MapEnhancements 动态创建） -->
+    
+    <!-- ========== 融合系统：角色创建面板 ========== -->
+    <div id="character-creation-overlay" class="character-creation-overlay" style="display:none;">
+        <div class="character-creation-panel">
+            <!-- 第1步：基本信息 -->
+            <div id="creation-step-basic">
+                <h2>🎮 创建你的角色</h2>
+                <div class="form-group">
+                    <label>角色名称</label>
+                    <input type="text" id="char-name-input" placeholder="输入你的角色名（2-10个字符）" maxlength="10" minlength="2" />
+                </div>
+                <div class="form-group">
+                    <label>性别</label>
+                    <div class="gender-buttons">
+                        <button class="gender-btn" data-gender="male" id="gender-male">♂ 男</button>
+                        <button class="gender-btn" data-gender="female" id="gender-female">♀ 女</button>
+                    </div>
+                </div>
+                <button class="create-btn" id="to-quiz-btn" disabled>下一步：性格测试</button>
+                <div style="text-align:center;margin-top:8px;">
+                    <button id="skip-all-btn" style="background:none;border:none;color:#888;cursor:pointer;font-size:13px;">跳过全部，使用默认角色进入</button>
+                </div>
+            </div>
+            
+            <!-- 第2步：性格测试问答 -->
+            <div id="creation-step-quiz" class="quiz-panel">
+                <h2>📝 性格测试</h2>
+                <div class="quiz-progress-bar">
+                    <div class="quiz-progress-fill" id="quiz-progress-fill" style="width:0%;"></div>
+                </div>
+                <div id="quiz-question-text" class="quiz-question"></div>
+                <div id="quiz-options-container"></div>
+            </div>
+            
+            <!-- 第3步：测试结果 -->
+            <div id="creation-step-result" class="quiz-panel">
+                <div class="quiz-result" id="quiz-result-content"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== 加载脚本 ========== -->
+    
+    <!-- 统一 UI 反馈工具 -->
+    <script type="module" src="js/ui/UIFeedback.js?v=1"></script>
+    
+    <!-- 原始地图系统脚本（100% 保留） -->
+    <script type="module" src="/map/js/main.js?v=14"></script>
+    <script type="module" src="/map/js/features/CampusModules.js?v=5"></script>
+    
+    <!-- 时间系统脚本 -->
+    <script src="js/config/TimeEvents.js?v=1"></script>
+    <script src="js/systems/TimeSystem.js?v=1"></script>
+    
+    <!-- 融合系统主入口脚本 -->
+    <script src="js/core/SessionManager.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/core/SaveManager.js"></script>
+    <script src="js/features/CampusWeekManager.js?v=1"></script>
+    <script type="module" src="js/FusionSystem.js?v=1"></script>
+    <script type="module" src="js/ui/GameDashboardUI.js?v=1"></script>
+    
+    <!-- 融合初始化脚本 -->
+    <script type="module">
+        import fusionSystem from './js/FusionSystem.js';
+        
+        /**
+         * ============================================================
+         * 融合系统初始化流程
+         * ============================================================
+         * 
+         * 启动顺序：
+         *   1. 显示加载屏幕
+         *   2. 等待地图系统完全加载
+         *   3. 检查是否有已保存的角色数据
+         *   4. 有角色 → 初始化融合系统
+         *   5. 无角色 → 显示角色创建面板
+         *   6. 角色创建完成后 → 初始化融合系统
+         *   7. 隐藏加载屏幕，进入游戏
+         */
+        
+        // 加载进度管理
+        const loadingScreen = document.getElementById('loading-screen');
+        const loadingBarFill = document.getElementById('loading-bar-fill');
+        const loadingText = document.getElementById('loading-text');
+        const charCreationOverlay = document.getElementById('character-creation-overlay');
+        
+        let loadingProgress = 0;
+        
+        function updateLoading(percent, text) {
+            loadingProgress = Math.max(loadingProgress, percent);
+            if (loadingBarFill) loadingBarFill.style.width = loadingProgress + '%';
+            if (text && loadingText) loadingText.textContent = text;
+        }
+        
+        function hideLoading() {
+            if (loadingScreen) {
+                loadingScreen.classList.add('hidden');
+                setTimeout(() => loadingScreen.remove(), 600);
+            }
+        }
+        
+        // ==================== 角色创建逻辑 ====================
+        
+        function showCharacterCreation() {
+            if (charCreationOverlay) {
+                charCreationOverlay.style.display = 'flex';
+                bindCreationEvents();
+            }
+        }
+        
+        function hideCharacterCreation() {
+            if (charCreationOverlay) charCreationOverlay.style.display = 'none';
+        }
+        
+        // ==================== 性格测试题库 ====================
+        const PERSONALITY_QUESTIONS = [
+            {
+                question: '周末你通常会做什么？',
+                options: [
+                    { text: '写代码、做项目', scores: { '计算机科学与技术学院': 3, '电气与电子工程学院': 1, '机械科学与工程学院': 1 } },
+                    { text: '去图书馆自习', scores: { '管理学院': 2, '法学院': 2, '计算机科学与技术学院': 1 } },
+                    { text: '参加社团活动', scores: { '管理学院': 3, '法学院': 1 } },
+                    { text: '做实验/搞研究', scores: { '电气与电子工程学院': 3, '机械科学与工程学院': 2, '计算机科学与技术学院': 1 } },
+                    { text: '运动健身', scores: { '机械科学与工程学院': 2, '电气与电子工程学院': 1 } }
+                ]
+            },
+            {
+                question: '遇到难题时你倾向于？',
+                options: [
+                    { text: '自己查资料钻研', scores: { '计算机科学与技术学院': 3, '电气与电子工程学院': 2 } },
+                    { text: '找同学讨论交流', scores: { '管理学院': 3, '法学院': 2 } },
+                    { text: '请教老师/学长', scores: { '电气与电子工程学院': 2, '机械科学与工程学院': 2 } },
+                    { text: '先放一放再回来看', scores: { '管理学院': 1, '法学院': 2 } },
+                    { text: '从不同角度反复尝试', scores: { '机械科学与工程学院': 3, '计算机科学与技术学院': 2 } }
+                ]
+            },
+            {
+                question: '在团队中你更愿意扮演什么角色？',
+                options: [
+                    { text: '技术核心/开发者', scores: { '计算机科学与技术学院': 3, '电气与电子工程学院': 2 } },
+                    { text: '项目组织者/管理者', scores: { '管理学院': 3, '法学院': 1 } },
+                    { text: '创意策划/出点子', scores: { '管理学院': 2, '法学院': 2 } },
+                    { text: '执行者/实干家', scores: { '机械科学与工程学院': 3, '电气与电子工程学院': 2 } },
+                    { text: '沟通协调/和事佬', scores: { '管理学院': 2, '法学院': 3 } }
+                ]
+            },
+            {
+                question: '你最崇拜的人物类型是？',
+                options: [
+                    { text: '科技企业家(如马斯克)', scores: { '计算机科学与技术学院': 3, '电气与电子工程学院': 2 } },
+                    { text: '商业领袖(如马云)', scores: { '管理学院': 3 } },
+                    { text: '科学家/发明家', scores: { '电气与电子工程学院': 3, '机械科学与工程学院': 2, '计算机科学与技术学院': 1 } },
+                    { text: '法官/律师/政治家', scores: { '法学院': 3 } },
+                    { text: '工程师/工匠大师', scores: { '机械科学与工程学院': 3, '电气与电子工程学院': 1 } }
+                ]
+            },
+            {
+                question: '你更喜欢哪种类型的游戏？',
+                options: [
+                    { text: '策略/模拟经营类', scores: { '管理学院': 3, '法学院': 1 } },
+                    { text: '编程/解谜类', scores: { '计算机科学与技术学院': 3 } },
+                    { text: '竞技/射击类', scores: { '电气与电子工程学院': 2, '机械科学与工程学院': 1 } },
+                    { text: '角色扮演/剧情类', scores: { '法学院': 2, '管理学院': 1 } },
+                    { text: '沙盒/建造类', scores: { '机械科学与工程学院': 3, '计算机科学与技术学院': 1 } }
+                ]
+            },
+            {
+                question: '朋友向你倾诉烦恼，你会？',
+                options: [
+                    { text: '理性分析，给出解决方案', scores: { '计算机科学与技术学院': 2, '电气与电子工程学院': 2, '管理学院': 1 } },
+                    { text: '耐心倾听，给予情感支持', scores: { '法学院': 3, '管理学院': 2 } },
+                    { text: '分享自己的类似经历', scores: { '管理学院': 2, '法学院': 2 } },
+                    { text: '帮TA分析利弊得失', scores: { '法学院': 2, '管理学院': 3 } },
+                    { text: '拉TA出去玩转移注意力', scores: { '机械科学与工程学院': 2, '管理学院': 1 } }
+                ]
+            },
+            {
+                question: '你最喜欢的课程类型是？',
+                options: [
+                    { text: '编程/数据结构', scores: { '计算机科学与技术学院': 3 } },
+                    { text: '经济学/管理学', scores: { '管理学院': 3 } },
+                    { text: '电路/物理实验', scores: { '电气与电子工程学院': 3, '机械科学与工程学院': 1 } },
+                    { text: '法律/逻辑辩论', scores: { '法学院': 3 } },
+                    { text: '工程制图/机械设计', scores: { '机械科学与工程学院': 3 } }
+                ]
+            },
+            {
+                question: '毕业后的理想去向是？',
+                options: [
+                    { text: '互联网大厂/科技公司', scores: { '计算机科学与技术学院': 3, '电气与电子工程学院': 1 } },
+                    { text: '国企/公务员/事业单位', scores: { '管理学院': 2, '法学院': 2 } },
+                    { text: '创业/自主经营', scores: { '管理学院': 3, '计算机科学与技术学院': 1 } },
+                    { text: '科研院所/深造读研', scores: { '电气与电子工程学院': 2, '机械科学与工程学院': 2 } },
+                    { text: '制造业/工程领域', scores: { '机械科学与工程学院': 3, '电气与电子工程学院': 2 } }
+                ]
+            },
+            {
+                question: '你认为自己最大的优点是？',
+                options: [
+                    { text: '逻辑思维强，善于分析', scores: { '计算机科学与技术学院': 3, '法学院': 2 } },
+                    { text: '领导力强，善于统筹', scores: { '管理学院': 3 } },
+                    { text: '动手能力强，善于实操', scores: { '机械科学与工程学院': 3, '电气与电子工程学院': 2 } },
+                    { text: '沟通表达好，善于辩论', scores: { '法学院': 3, '管理学院': 1 } },
+                    { text: '专注力强，能沉下心研究', scores: { '电气与电子工程学院': 3, '计算机科学与技术学院': 1 } }
+                ]
+            },
+            {
+                question: '空闲时间你更喜欢？',
+                options: [
+                    { text: '学习新技术/看技术博客', scores: { '计算机科学与技术学院': 3, '电气与电子工程学院': 1 } },
+                    { text: '阅读商业/管理类书籍', scores: { '管理学院': 3 } },
+                    { text: '拆装维修电子设备', scores: { '电气与电子工程学院': 3, '机械科学与工程学院': 2 } },
+                    { text: '看时事评论/辩论节目', scores: { '法学院': 3 } },
+                    { text: '动手制作模型/DIY', scores: { '机械科学与工程学院': 3 } }
+                ]
+            }
+        ];
+        
+        const COLLEGES = [
+            '计算机科学与技术学院',
+            '管理学院',
+            '电气与电子工程学院',
+            '机械科学与工程学院',
+            '法学院'
+        ];
+        
+        let creationState = {
+            selectedGender: '',
+            characterName: '',
+            quizAnswers: [],
+            currentQuestion: 0,
+            collegeScores: {}
+        };
+        
+        function bindCreationEvents() {
+            const nameInput = document.getElementById('char-name-input');
+            const toQuizBtn = document.getElementById('to-quiz-btn');
+            const skipAllBtn = document.getElementById('skip-all-btn');
+            const genderBtns = document.querySelectorAll('.gender-btn');
+            const stepBasic = document.getElementById('creation-step-basic');
+            const stepQuiz = document.getElementById('creation-step-quiz');
+            const stepResult = document.getElementById('creation-step-result');
+            
+            // 性别选择
+            genderBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    genderBtns.forEach(b => b.classList.remove('selected'));
+                    btn.classList.add('selected');
+                    creationState.selectedGender = btn.dataset.gender;
+                    validateBasicForm();
+                });
+            });
+            
+            // 表单验证
+            function validateBasicForm() {
+                const name = nameInput.value.trim();
+                const valid = name.length >= 2 && name.length <= 10 && creationState.selectedGender;
+                toQuizBtn.disabled = !valid;
+            }
+            
+            nameInput.addEventListener('input', validateBasicForm);
+            
+            // 进入问答
+            toQuizBtn.addEventListener('click', () => {
+                creationState.characterName = nameInput.value.trim();
+                creationState.collegeScores = {};
+                COLLEGES.forEach(c => creationState.collegeScores[c] = 0);
+                creationState.currentQuestion = 0;
+                creationState.quizAnswers = [];
+                
+                stepBasic.style.display = 'none';
+                stepQuiz.classList.add('active');
+                showQuestion(0);
+            });
+            
+            // 跳过全部
+            skipAllBtn.addEventListener('click', () => {
+                hideCharacterCreation();
+                initGameWithCharacter({
+                    characterName: 'HUST新生',
+                    gender: 'male',
+                    college: '计算机科学与技术学院'
+                });
+            });
+            
+            function showQuestion(index) {
+                if (index >= PERSONALITY_QUESTIONS.length) {
+                    showResults();
+                    return;
+                }
+                const q = PERSONALITY_QUESTIONS[index];
+                const total = PERSONALITY_QUESTIONS.length;
+                
+                document.getElementById('quiz-progress-fill').style.width = ((index / total) * 100) + '%';
+                document.getElementById('quiz-question-text').textContent = 
+                    `第 ${index + 1}/${total} 题：${q.question}`;
+                
+                const optionsContainer = document.getElementById('quiz-options-container');
+                optionsContainer.innerHTML = '';
+                
+                q.options.forEach((opt, i) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'quiz-option';
+                    btn.textContent = String.fromCharCode(65 + i) + '. ' + opt.text;
+                    btn.addEventListener('click', () => {
+                        // 记录得分
+                        creationState.quizAnswers.push(i);
+                        for (const [college, score] of Object.entries(opt.scores)) {
+                            creationState.collegeScores[college] = 
+                                (creationState.collegeScores[college] || 0) + score;
+                        }
+                        creationState.currentQuestion++;
+                        showQuestion(creationState.currentQuestion);
+                    });
+                    optionsContainer.appendChild(btn);
+                });
+            }
+            
+            function showResults() {
+                stepQuiz.classList.remove('active');
+                stepResult.classList.add('active');
+                
+                document.getElementById('quiz-progress-fill').style.width = '100%';
+                
+                // 排序学院得分
+                const sorted = Object.entries(creationState.collegeScores)
+                    .sort((a, b) => b[1] - a[1]);
+                const bestCollege = sorted[0][0];
+                const maxScore = sorted[0][1];
+                
+                let starsHtml = sorted.map(([college, score]) => {
+                    const stars = Math.round((score / maxScore) * 5);
+                    const starStr = '★'.repeat(stars) + '☆'.repeat(5 - stars);
+                    const isBest = college === bestCollege;
+                    return `<div class="quiz-score-row" style="${isBest ? 'border:1px solid rgba(255,215,0,0.2);' : ''}">
+                        <span class="quiz-score-name" style="${isBest ? 'color:var(--gold);font-weight:600;' : ''}">${college}</span>
+                        <span class="quiz-score-stars">${starStr}</span>
+                    </div>`;
+                }).join('');
+                
+                document.getElementById('quiz-result-content').innerHTML = `
+                    <h3>📊 测试结果</h3>
+                    ${starsHtml}
+                    <div class="quiz-recommend">
+                        🎯 推荐学院：${bestCollege}
+                    </div>
+                    <div style="margin-top:16px;display:flex;gap:10px;">
+                        <button id="confirm-college-btn" style="
+                            flex:1;padding:13px;
+                            background:linear-gradient(135deg,#D4A017,var(--gold));
+                            color:#12142a;border:none;border-radius:10px;
+                            font-size:15px;font-weight:700;cursor:pointer;
+                            letter-spacing:1px;box-shadow:0 4px 16px rgba(255,215,0,0.2);
+                        ">✅ 选择 ${bestCollege}</button>
+                        <button id="manual-college-btn" style="
+                            padding:13px 20px;
+                            background:rgba(255,255,255,0.04);
+                            color:#9ca3af;border:1px solid rgba(255,255,255,0.08);
+                            border-radius:10px;font-size:14px;cursor:pointer;
+                        ">手动选择</button>
+                    </div>
+                `;
+                
+                document.getElementById('confirm-college-btn').addEventListener('click', () => {
+                    finishCreation(bestCollege);
+                });
+                
+                document.getElementById('manual-college-btn').addEventListener('click', () => {
+                    // 显示手动选择
+                    const resultDiv = document.getElementById('quiz-result-content');
+                    resultDiv.innerHTML = `
+                        <h3>🎓 手动选择学院</h3>
+                        <div style="text-align:left;margin-top:12px;">
+                            ${COLLEGES.map(c => `
+                                <button class="quiz-option manual-college-opt" data-college="${c}">
+                                    ${c} ${creationState.collegeScores[c] > 0 ? '(' + creationState.collegeScores[c] + '分)' : ''}
+                                </button>
+                            `).join('')}
+                        </div>
+                    `;
+                    document.querySelectorAll('.manual-college-opt').forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            finishCreation(btn.dataset.college);
+                        });
+                    });
+                });
+            }
+            
+            function finishCreation(college) {
+                const characterData = {
+                    characterName: creationState.characterName,
+                    gender: creationState.selectedGender,
+                    college: college,
+                    quizAnswers: creationState.quizAnswers,
+                    collegeScores: creationState.collegeScores
+                };
+                
+                hideCharacterCreation();
+                initGameWithCharacter(characterData, null, true);
+            }
+        }
+        
+        // ==================== 游戏初始化 ====================
+        
+        async function initGameWithCharacter(characterData, savedTime = null, shouldCreateRemoteCharacter = false) {
+            updateLoading(70, '正在初始化任务系统...');
+            
+            // 登录用户创建角色时，先同步到后端并保存当前 characterId
+            if (shouldCreateRemoteCharacter && typeof sessionManager !== 'undefined' && sessionManager.isLoggedIn()) {
+                try {
+                    const created = await authSystem.createCharacter(
+                        characterData.characterName,
+                        characterData.gender,
+                        characterData.college
+                    );
+                    if (created) {
+                        characterData = {
+                            ...characterData,
+                            characterId: created.characterId
+                        };
+                    }
+                } catch (error) {
+                    console.warn('[初始化] 后端角色创建失败，继续本地游戏:', error.message);
+                }
+            }
+            
+            try {
+                // 检查地图系统是否已加载
+                await waitForMapSystem();
+                updateLoading(80, '正在初始化时间系统...');
+                
+                // 初始化时间系统
+                if (!savedTime) {
+                  savedTime = window.timeSystem.loadTime();
+                }
+                window.timeSystem.init(savedTime);
+                
+                // 等待questTriggerManager被暴露到window上后,传给时间系统
+                const waitForQuestManager = setInterval(() => {
+                  if (window.questTriggerManager) {
+                    clearInterval(waitForQuestManager);
+                    window.timeSystem.setQuestManager(window.questTriggerManager);
+                    window.questTriggerManager.setGameTime(window.timeSystem.gameTime);
+                  }
+                }, 100);
+                
+                // 订阅时间事件
+                window.timeSystem.subscribe('dayChange', (event, data) => {
+                    console.log('[时间系统] 新的一天开始了:', data.weekday);
+                    // 显示今日推荐活动
+                    if (window.getTimeEvents) {
+                        const activities = window.getTimeEvents.getRecommendedActivities(data.time);
+                        if (activities.length > 0 && window.questTriggerUI) {
+                            window.questTriggerUI._showToast(`📅 今日推荐：${activities[0]}`, '#4CAF50', 4000);
+                        }
+                    }
+                });
+                
+                window.timeSystem.subscribe('periodChange', (event, data) => {
+                    console.log('[时间系统] 时间段变化:', data.period);
+                    // 显示时间段提示
+                    if (window.getTimeEvents) {
+                        const message = window.getTimeEvents.getPeriodMessage(data.period);
+                        if (window.questTriggerUI) {
+                            window.questTriggerUI._showToast(`🌤️ ${message}`, '#2196F3', 3000);
+                        }
+                    }
+                });
+                
+                window.timeSystem.subscribe('hourChange', (event, data) => {
+                    console.log('[时间系统] 整点:', data.hour);
+                    // 检查课程和食堂状态
+                    if (window.getTimeEvents) {
+                        const time = window.timeSystem.getTime();
+                        
+                        // 检查上课
+                        const currentClass = window.getTimeEvents.getClassAtTime(time);
+                        if (currentClass && window.questTriggerUI) {
+                            window.questTriggerUI._showToast(`📚 ${currentClass.name}开始了！`, '#FF9800', 4000);
+                        }
+                        
+                        // 检查食堂
+                        const canteenStatus = window.getTimeEvents.getCanteenStatus(time);
+                        if (canteenStatus.open && canteenStatus.meal && window.questTriggerUI) {
+                            if (data.hour === canteenStatus.meal.start) {
+                                window.questTriggerUI._showToast(`🍽️ ${canteenStatus.meal.name}到了！`, '#4CAF50', 3000);
+                            }
+                        }
+                    }
+                });
+                
+                window.timeSystem.subscribe('semesterStart', (event, data) => {
+                    if (window.questTriggerUI) {
+                        window.questTriggerUI._showToast(`🎓 第${data.semester}学期开始了！新的学期加油！`, '#FFD700', 5000);
+                    }
+                });
+                
+                window.timeSystem.subscribe('midterm', (event, data) => {
+                    if (window.questTriggerUI) {
+                        window.questTriggerUI._showToast(`📝 期中周到了，好好复习！`, '#FF5722', 5000);
+                    }
+                });
+                
+                window.timeSystem.subscribe('finalWeek', (event, data) => {
+                    if (window.questTriggerUI) {
+                        window.questTriggerUI._showToast(`💯 期末周到了，全力以赴！`, '#E91E63', 5000);
+                    }
+                });
+                
+                window.timeSystem.subscribe('semesterEnd', (event, data) => {
+                    if (window.questTriggerUI) {
+                        window.questTriggerUI._showToast(`🎉 第${data.semester}学期结束了！假期快乐！`, '#4CAF50', 5000);
+                    }
+                });
+                
+                updateLoading(90, '正在融合系统...');
+                
+                // 初始化融合系统
+                await fusionSystem.init({ characterData });
+                fusionSystem.createCharacter(characterData);
+                
+                updateLoading(100, '初始化完成！');
+                
+                // 短暂延迟后隐藏加载屏幕
+                setTimeout(async () => {
+                    hideLoading();
+                    showWelcomeNotification(characterData.characterName);
+                    
+                    // 保存初始快照
+                    try {
+                        if (typeof saveManager !== 'undefined') {
+                            await saveManager.save();
+                            console.log('[存档系统] 初始快照已保存');
+                        }
+                    } catch (error) {
+                        console.warn('[存档系统] 初始快照保存失败:', error.message);
+                    }
+                    
+                    // 启动自动保存
+                    startAutoSave();
+                    
+                    // 初始化游戏主界面 UI
+                    if (typeof window !== 'undefined' && window.GameDashboardUI) {
+                        window.gameDashboardUI = window.GameDashboardUI.init();
+                    }
+                    if (typeof window !== 'undefined' && window.CampusWeekManager) {
+                        window.CampusWeekManager.init();
+                    }
+                }, 800);
+                
+            } catch (error) {
+                console.error('[初始化] 融合系统初始化失败:', error);
+                loadingText.textContent = '初始化失败，请刷新页面重试';
+                loadingText.style.color = '#FF5252';
+            }
+        }
+        
+        // ==================== 自动保存 ====================
+        
+        let autoSaveInterval = null;
+        
+        function startAutoSave() {
+            if (typeof saveManager !== 'undefined') {
+                saveManager.startAutoSave();
+            } else {
+                // 兜底：每30秒自动保存一次
+                autoSaveInterval = setInterval(() => {
+                    saveGame();
+                }, 30000);
+            }
+            
+            console.log('[存档系统] 自动保存已启动');
+        }
+        
+        async function saveGame() {
+            try {
+                // 保存时间（兼容旧时间系统）
+                if (window.timeSystem && typeof window.timeSystem.saveTime === 'function') {
+                    window.timeSystem.saveTime();
+                }
+                
+                // 统一存档
+                if (typeof saveManager !== 'undefined') {
+                    await saveManager.save();
+                }
+                
+                console.log('[存档系统] 游戏已保存');
+            } catch (e) {
+                console.error('[存档系统] 保存失败:', e);
+            }
+        }
+        
+        function waitForMapSystem(timeout = 15000) {
+            return new Promise((resolve, reject) => {
+                const startTime = Date.now();
+                
+                const check = () => {
+                    // 检查地图系统的关键模块是否可用
+                    const mapReady = (
+                        typeof window._eventBus !== 'undefined' &&
+                        typeof window._character !== 'undefined' &&
+                        typeof window._mapData !== 'undefined'
+                    );
+                    
+                    if (mapReady) {
+                        resolve();
+                        return;
+                    }
+                    
+                    if (Date.now() - startTime > timeout) {
+                        reject(new Error('地图系统加载超时'));
+                        return;
+                    }
+                    
+                    updateLoading(30 + Math.min(30, (Date.now() - startTime) / timeout * 30), '等待地图系统就绪...');
+                    setTimeout(check, 200);
+                };
+                
+                check();
+            });
+        }
+        
+        function showWelcomeNotification(name) {
+            // 使用融合系统的 Toast 显示欢迎信息
+            setTimeout(() => {
+                if (window.questTriggerUI && window.questTriggerUI._showToast) {
+                    window.questTriggerUI._showToast(`🎓 欢迎来到 HUST World，${name}！`, '#FFD700', 5000);
+                }
+            }, 1500);
+        }
+        
+        // ==================== 账号面板 ====================
+        
+        function renderAccountPanel() {
+            const isLoggedIn = typeof sessionManager !== 'undefined' && sessionManager.isLoggedIn();
+            const user = isLoggedIn ? sessionManager.getUser() : null;
+            const hasChars = isLoggedIn && sessionManager.hasCharacters();
+            const currentChar = isLoggedIn ? sessionManager.getCurrentCharacter() : null;
+            
+            // 登录/注册面板
+            let panelHTML = '';
+            if (!isLoggedIn) {
+                panelHTML += `
+                    <div style="margin-bottom:14px;text-align:left;">
+                        <div style="font-size:12px;color:#9ca3af;margin-bottom:8px;">🔑 登录以云端保存进度</div>
+                        <input type="text" id="login-username" placeholder="用户名" style="width:100%;padding:10px 12px;margin-bottom:8px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:#e5e7eb;font-size:13px;box-sizing:border-box;"/>
+                        <input type="password" id="login-password" placeholder="密码" style="width:100%;padding:10px 12px;margin-bottom:8px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:#e5e7eb;font-size:13px;box-sizing:border-box;"/>
+                        <div style="display:flex;gap:8px;">
+                            <button id="btn-do-login" style="flex:1;padding:10px;background:linear-gradient(135deg,#D4A017,var(--gold));color:#12142a;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;">登录</button>
+                            <button id="btn-do-register" style="flex:1;padding:10px;background:rgba(255,255,255,0.04);color:#9ca3af;border:1px solid rgba(255,255,255,0.08);border-radius:8px;font-size:13px;cursor:pointer;">注册</button>
+                        </div>
+                        <div id="login-error" style="margin-top:8px;font-size:12px;color:#f87171;min-height:16px;"></div>
+                    </div>
+                `;
+            } else {
+                panelHTML += `
+                    <div style="margin-bottom:14px;text-align:left;">
+                        <div style="font-size:13px;color:var(--gold);font-weight:600;">👤 已登录：${user.username || '用户'}</div>
+                        ${currentChar ? `<div style="font-size:12px;color:#9ca3af;margin-top:4px;">当前角色：${currentChar.characterName || '未选择'}</div>` : ''}
+                    </div>
+                `;
+            }
+            
+            return panelHTML;
+        }
+        
+        function showLoginPanel() {
+            const overlay = document.createElement('div');
+            overlay.id = 'login-panel-overlay';
+            overlay.className = 'character-creation-overlay';
+            overlay.style.zIndex = '65000';
+            overlay.innerHTML = `
+                <div class="character-creation-panel" style="width:360px;padding:32px;">
+                    <h2 style="margin-bottom:20px;">🔐 账号登录</h2>
+                    ${renderAccountPanel()}
+                    <button id="btn-close-login" style="width:100%;padding:10px;background:rgba(255,255,255,0.04);color:#9ca3af;border:1px solid rgba(255,255,255,0.08);border-radius:8px;font-size:13px;cursor:pointer;">取消</button>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+            overlay.style.display = 'flex';
+            
+            document.getElementById('btn-close-login').addEventListener('click', () => overlay.remove());
+            
+            const loginBtn = document.getElementById('btn-do-login');
+            const registerBtn = document.getElementById('btn-do-register');
+            if (loginBtn) {
+                loginBtn.addEventListener('click', async () => {
+                    const username = document.getElementById('login-username').value.trim();
+                    const password = document.getElementById('login-password').value;
+                    const errorEl = document.getElementById('login-error');
+                    errorEl.textContent = '';
+                    if (!username || !password) {
+                        errorEl.textContent = '请输入用户名和密码';
+                        return;
+                    }
+                    try {
+                        await authSystem.login(username, password);
+                        overlay.remove();
+                        refreshStartScreen();
+                    } catch (error) {
+                        errorEl.textContent = error.message || '登录失败';
+                    }
+                });
+            }
+            if (registerBtn) {
+                registerBtn.addEventListener('click', async () => {
+                    const username = document.getElementById('login-username').value.trim();
+                    const password = document.getElementById('login-password').value;
+                    const errorEl = document.getElementById('login-error');
+                    errorEl.textContent = '';
+                    if (!username || !password) {
+                        errorEl.textContent = '请输入用户名和密码';
+                        return;
+                    }
+                    try {
+                        await authSystem.register(username, password, `${username}@hust.world`);
+                        // 注册后自动登录
+                        await authSystem.login(username, password);
+                        overlay.remove();
+                        refreshStartScreen();
+                    } catch (error) {
+                        errorEl.textContent = error.message || '注册失败';
+                    }
+                });
+            }
+        }
+        
+        function showCharacterSelectPanel() {
+            const characters = sessionManager.getCharacters();
+            const overlay = document.createElement('div');
+            overlay.id = 'character-select-overlay';
+            overlay.className = 'character-creation-overlay';
+            overlay.style.zIndex = '65000';
+            overlay.innerHTML = `
+                <div class="character-creation-panel" style="width:420px;padding:32px;">
+                    <h2 style="margin-bottom:20px;">🎭 选择角色</h2>
+                    <div id="character-list" style="margin-bottom:16px;">
+                        ${characters.map(c => `
+                            <div class="char-select-card" data-character-id="${c.characterId || c.character_id}" style="
+                                padding:14px 16px;margin-bottom:10px;background:rgba(255,255,255,0.03);
+                                border:1px solid rgba(255,255,255,0.08);border-radius:12px;cursor:pointer;
+                                transition:all 0.2s;text-align:left;">
+                                <div style="font-size:15px;font-weight:700;color:#e5e7eb;">${c.characterName || '未命名'}</div>
+                                <div style="font-size:12px;color:#9ca3af;margin-top:4px;">
+                                    ${c.college || '未知学院'} · Lv.${c.level || 1} · ${c.gender === 'female' ? '♀' : '♂'}
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <button id="btn-create-new-character" style="width:100%;padding:12px;background:linear-gradient(135deg,#D4A017,var(--gold));color:#12142a;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:10px;">
+                        ➕ 创建新角色
+                    </button>
+                    <button id="btn-close-select" style="width:100%;padding:10px;background:rgba(255,255,255,0.04);color:#9ca3af;border:1px solid rgba(255,255,255,0.08);border-radius:8px;font-size:13px;cursor:pointer;">取消</button>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+            overlay.style.display = 'flex';
+            
+            document.getElementById('btn-close-select').addEventListener('click', () => overlay.remove());
+            document.getElementById('btn-create-new-character').addEventListener('click', () => {
+                overlay.remove();
+                startNewGame();
+            });
+            
+            document.querySelectorAll('.char-select-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    const charId = card.dataset.characterId;
+                    const character = characters.find(c => (c.characterId || c.character_id) == charId);
+                    if (character) {
+                        authSystem.selectCharacter(character);
+                        overlay.remove();
+                        continueGame(character, null);
+                    }
+                });
+            });
+        }
+        
+        function refreshStartScreen() {
+            const isLoggedIn = typeof sessionManager !== 'undefined' && sessionManager.isLoggedIn();
+            const hasChars = isLoggedIn && sessionManager.hasCharacters();
+            const hasLocalSave = !!loadSavedCharacter();
+            
+            const btnContinue = document.getElementById('btn-continue');
+            const btnCharacterSelect = document.getElementById('btn-character-select');
+            const btnLogin = document.getElementById('btn-login');
+            const btnLogout = document.getElementById('btn-logout');
+            const btnNewGame = document.getElementById('btn-new-game');
+            const savedInfo = document.getElementById('saved-info');
+            const statusRow = document.getElementById('start-status-row');
+            const statusDot = document.getElementById('start-status-dot');
+            const statusText = document.getElementById('start-status-text');
+            
+            // 默认隐藏
+            btnContinue.style.display = 'none';
+            btnCharacterSelect.style.display = 'none';
+            btnLogin.style.display = 'none';
+            btnLogout.style.display = 'none';
+            savedInfo.style.display = 'none';
+            statusRow.style.display = 'none';
+            
+            if (isLoggedIn) {
+                btnLogout.style.display = 'block';
+                statusRow.style.display = 'flex';
+                statusDot.className = 'start-status-dot logged-in';
+                
+                if (hasChars) {
+                    btnCharacterSelect.style.display = 'block';
+                    const currentChar = sessionManager.getCurrentCharacter();
+                    if (currentChar) {
+                        btnContinue.style.display = 'block';
+                        savedInfo.style.display = 'block';
+                        savedInfo.innerHTML = `
+                            <strong>当前角色</strong>：${currentChar.characterName} · ${currentChar.college || '未知学院'}
+                            ${currentChar.level ? ` · Lv.${currentChar.level}` : ''}
+                        `;
+                        statusText.textContent = '已登录 · 有角色';
+                    } else {
+                        statusText.textContent = '已登录 · 请选择角色';
+                    }
+                    btnNewGame.textContent = '开始游戏';
+                } else {
+                    statusText.textContent = '已登录 · 无角色';
+                    btnNewGame.textContent = '创建角色';
+                }
+            } else {
+                btnLogin.style.display = 'block';
+                statusRow.style.display = 'flex';
+                statusDot.className = 'start-status-dot guest';
+                btnNewGame.textContent = '开始游戏';
+                
+                if (hasLocalSave) {
+                    btnContinue.style.display = 'block';
+                    savedInfo.style.display = 'block';
+                    const save = saveManager.loadLocal();
+                    const charName = save?.character?.characterName || '游客';
+                    const day = save?.gameTime?.day ? ` · 第 ${save.gameTime.day} 天` : '';
+                    const semester = save?.character?.semester ? ` · ${formatSemesterForDisplay(save.character.grade, save.character.semester)}` : '';
+                    savedInfo.innerHTML = `
+                        <strong>本地游客存档</strong>：${charName}${semester}${day}
+                        ${save?.character?.level ? ` · Lv.${save.character.level}` : ''}
+                    `;
+                    statusText.textContent = '游客模式 · 有存档';
+                } else {
+                    statusText.textContent = '游客模式 · 无存档';
+                }
+            }
+        }
+        
+        function formatSemesterForDisplay(grade, semester) {
+            const gradeMap = { 1: '大一', 2: '大二', 3: '大三', 4: '大四' };
+            const semMap = { 1: '上', 2: '下' };
+            return `${gradeMap[grade] || '大一'}${semMap[semester] || '上'}`;
+        }
+        
+        // ==================== 启动流程 ====================
+        
+        (async function startGame() {
+            console.log('============================================');
+            console.log('  HUST World - 融合系统启动中...');
+            console.log('  地图系统 + 主线战斗系统');
+            console.log('============================================');
+            
+            // 先隐藏加载屏幕,显示开始界面
+            const loadingScreen = document.getElementById('loading-screen');
+            loadingScreen.style.display = 'none';
+            
+            const startScreen = document.getElementById('start-screen');
+            const btnContinue = document.getElementById('btn-continue');
+            const btnNewGame = document.getElementById('btn-new-game');
+            const btnCharacterSelect = document.getElementById('btn-character-select');
+            const btnLogin = document.getElementById('btn-login');
+            const btnLogout = document.getElementById('btn-logout');
+            const savedInfo = document.getElementById('saved-info');
+            
+            // 刷新开始界面按钮状态
+            refreshStartScreen();
+            
+            // 绑定事件
+            btnNewGame.addEventListener('click', () => {
+                if (typeof sessionManager !== 'undefined' && sessionManager.isLoggedIn() && !sessionManager.hasCharacters()) {
+                    // 登录但无角色：引导创建角色
+                    startNewGame();
+                } else {
+                    startNewGame();
+                }
+            });
+            
+            btnContinue.addEventListener('click', async () => {
+                const isLoggedIn = typeof sessionManager !== 'undefined' && sessionManager.isLoggedIn();
+                if (isLoggedIn) {
+                    const character = sessionManager.getCurrentCharacter();
+                    if (character) {
+                        await continueGame(character, null);
+                    }
+                } else {
+                    const savedCharacter = loadSavedCharacter();
+                    const savedTime = loadSavedTime();
+                    await continueGame(savedCharacter, savedTime);
+                }
+            });
+            
+            btnCharacterSelect.addEventListener('click', () => {
+                showCharacterSelectPanel();
+            });
+            
+            btnLogin.addEventListener('click', () => {
+                showLoginPanel();
+            });
+            
+            btnLogout.addEventListener('click', () => {
+                if (confirm('退出登录后仍可继续使用本地游客存档，确定退出？')) {
+                    authSystem.logout();
+                    refreshStartScreen();
+                }
+            });
+            
+            // 按任意键开始游戏：优先继续（登录用户继续当前角色，游客继续本地）
+            document.addEventListener('keydown', async function startOnKey(e) {
+                const isLoggedIn = typeof sessionManager !== 'undefined' && sessionManager.isLoggedIn();
+                if (isLoggedIn && sessionManager.getCurrentCharacter()) {
+                    await continueGame(sessionManager.getCurrentCharacter(), null);
+                } else if (loadSavedCharacter()) {
+                    const savedCharacter = loadSavedCharacter();
+                    const savedTime = loadSavedTime();
+                    await continueGame(savedCharacter, savedTime);
+                } else {
+                    startNewGame();
+                }
+                document.removeEventListener('keydown', startOnKey);
+            }, { once: true });
+            
+            // 点击屏幕开始游戏
+            startScreen.addEventListener('click', async function startOnClick(e) {
+                if (e.target.tagName !== 'BUTTON') {
+                    const isLoggedIn = typeof sessionManager !== 'undefined' && sessionManager.isLoggedIn();
+                    if (isLoggedIn && sessionManager.getCurrentCharacter()) {
+                        await continueGame(sessionManager.getCurrentCharacter(), null);
+                    } else if (loadSavedCharacter()) {
+                        const savedCharacter = loadSavedCharacter();
+                        const savedTime = loadSavedTime();
+                        await continueGame(savedCharacter, savedTime);
+                    } else {
+                        startNewGame();
+                    }
+                }
+            }, { once: true });
+        })();
+        
+        function startNewGame() {
+            console.log('[启动] 开始新游戏');
+            
+            const isLoggedIn = typeof sessionManager !== 'undefined' && sessionManager.isLoggedIn();
+            
+            // 仅清理当前本地存档数据，保留登录 token/user/角色/当前角色
+            try {
+                if (typeof saveManager !== 'undefined') {
+                    saveManager.resetLocal();
+                } else {
+                    localStorage.removeItem('hust_world_save_v1');
+                    localStorage.removeItem('hust_world_time');
+                    localStorage.removeItem('hust_world_module_clubs');
+                    localStorage.removeItem('hust_world_module_exploration');
+                }
+            } catch (e) {}
+            
+            // 游客模式直接重置当前角色；登录模式保留角色选择
+            if (!isLoggedIn && typeof sessionManager !== 'undefined') {
+                sessionManager.clearCurrentCharacterId();
+            }
+            
+            // 隐藏开始界面,显示加载屏幕
+            const startScreen = document.getElementById('start-screen');
+            const loadingScreen = document.getElementById('loading-screen');
+            
+            if (!startScreen || !loadingScreen) {
+                console.error('[启动] 找不到必要的DOM元素');
+                return;
+            }
+            
+            startScreen.style.display = 'none';
+            loadingScreen.style.display = 'flex';
+            
+            updateLoading(10, '正在初始化引擎...');
+            
+            // 等待地图系统加载,然后显示角色创建
+            waitForMapSystem(20000).then(() => {
+                updateLoading(50, '地图加载完成，请创建角色');
+                setTimeout(() => {
+                    hideLoading();
+                    showCharacterCreation();
+                }, 500);
+            }).catch(err => {
+                console.error(err);
+                updateLoading(50, '地图加载失败，请刷新页面');
+                const loadingText = document.getElementById('loading-text');
+                if (loadingText) {
+                    loadingText.style.color = '#FF5252';
+                }
+            });
+        }
+        
+        async function continueGame(savedCharacter, savedTime) {
+            console.log('[启动] 继续游戏:', savedCharacter ? savedCharacter.characterName : '未知角色');
+            
+            // 隐藏开始界面,显示加载屏幕
+            const startScreen = document.getElementById('start-screen');
+            const loadingScreen = document.getElementById('loading-screen');
+            
+            startScreen.style.display = 'none';
+            loadingScreen.style.display = 'flex';
+            
+            updateLoading(10, '正在初始化引擎...');
+            
+            // 加载统一存档并应用
+            let save = null;
+            try {
+                if (typeof saveManager !== 'undefined') {
+                    save = await saveManager.load();
+                    if (save && save.character) {
+                        savedCharacter = save.character;
+                        savedTime = save.gameTime;
+                    }
+                }
+            } catch (error) {
+                console.warn('[启动] 加载存档失败，使用本地缓存:', error.message);
+            }
+            
+            // 启动游戏,加载存档
+            await initGameWithCharacter(savedCharacter, savedTime);
+            
+            // 应用快照中的位置、时间等
+            if (save && typeof saveManager !== 'undefined') {
+                saveManager.applySnapshot(save);
+            }
+        }
+        
+        function loadSavedCharacter() {
+            if (typeof saveManager === 'undefined') return null;
+            saveManager.ensureMigration();
+            const save = saveManager.loadLocal();
+            return save && save.character ? save.character : null;
+        }
+        
+        function loadSavedTime() {
+            if (typeof saveManager === 'undefined') return null;
+            const save = saveManager.loadLocal();
+            return save && save.gameTime ? save.gameTime : null;
+        }
+        
+        // ==================== 键盘快捷键提示 ====================
+        
+        console.log(`
+        ============================================
+        🎮 操作指南：
+          WASD / 方向键 - 移动角色
+          Shift - 加速移动
+          鼠标拖拽 - 平移地图
+          滚轮 - 缩放地图
+          点击地图 - 自动寻路到该点
+          E 键 - 触发任务 / 与NPC对话 / 乘坐巴士
+          F 键 - 探索打卡
+          R 键 - 跑酷小游戏（靠近操场时）
+          J 键 - 打开/关闭任务日志
+          Esc - 关闭面板
+        ============================================
+        `);
+    </script>
+</body>
+</html>

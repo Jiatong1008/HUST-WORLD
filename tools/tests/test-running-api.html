@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>校园跑API测试</title>
+  <style>
+    body {
+      font-family: 'Microsoft YaHei', Arial, sans-serif;
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    h1 {
+      color: #333;
+      border-bottom: 2px solid #4CAF50;
+      padding-bottom: 10px;
+    }
+    .test-section {
+      background: white;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    button {
+      background: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      margin: 5px;
+    }
+    button:hover {
+      background: #45a049;
+    }
+    pre {
+      background: #f8f8f8;
+      padding: 15px;
+      border-radius: 4px;
+      overflow-x: auto;
+      font-size: 12px;
+    }
+    .success {
+      color: #4CAF50;
+      font-weight: bold;
+    }
+    .error {
+      color: #f44336;
+      font-weight: bold;
+    }
+    .info {
+      background: #e3f2fd;
+      padding: 10px;
+      border-left: 4px solid #2196F3;
+      margin: 10px 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>🏃 校园跑API测试工具</h1>
+  
+  <div class="info">
+    <strong>服务器地址：</strong> <span id="server-url">检测中...</span><br>
+    <strong>当前端口：</strong> <span id="current-port">-</span>
+  </div>
+
+  <div class="test-section">
+    <h2>1️ 测试记录校园跑</h2>
+    <button onclick="testRecordRun()">记录一次校园跑</button>
+    <pre id="record-result">等待测试...</pre>
+  </div>
+
+  <div class="test-section">
+    <h2>2️ 测试获取校园跑记录</h2>
+    <button onclick="testGetRecords()">获取记录列表</button>
+    <pre id="records-result">等待测试...</pre>
+  </div>
+
+  <div class="test-section">
+    <h2>3️ 测试获取统计信息</h2>
+    <button onclick="testGetStats()">获取统计数据</button>
+    <pre id="stats-result">等待测试...</pre>
+  </div>
+
+  <script>
+    // 自动检测API地址
+    const API_BASE = window.location.port === '8080' ? '/api' : 
+                     window.location.port === '3000' ? '/api' : 
+                     `http://localhost:${window.location.port || 8080}/api`;
+    
+    document.getElementById('server-url').textContent = API_BASE.replace('/api', '');
+    document.getElementById('current-port').textContent = window.location.port || '未检测到（可能是file://协议）';
+
+    async function testRecordRun() {
+      const resultEl = document.getElementById('record-result');
+      resultEl.textContent = '正在测试...';
+      
+      try {
+        const response = await fetch(`${API_BASE}/running/record`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            characterId: 1,
+            semester: 1,
+            distance: 1000,
+            duration: 300,
+            status: 'completed'
+          })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+          resultEl.innerHTML = `<span class="success">✅ 成功！</span>\n${JSON.stringify(data, null, 2)}`;
+        } else {
+          resultEl.innerHTML = `<span class="error">❌ 失败！</span>\n状态码: ${response.status}\n${JSON.stringify(data, null, 2)}`;
+        }
+      } catch (error) {
+        resultEl.innerHTML = `<span class="error">❌ 错误！</span>\n${error.message}\n\n请检查：\n1. 服务器是否启动（端口8080）\n2. 网络连接是否正常`;
+      }
+    }
+
+    async function testGetRecords() {
+      const resultEl = document.getElementById('records-result');
+      resultEl.textContent = '正在测试...';
+      
+      try {
+        const response = await fetch(`${API_BASE}/running/1?year=2024&semester=1`);
+        const data = await response.json();
+        
+        if (response.ok) {
+          resultEl.innerHTML = `<span class="success">✅ 成功！共 ${data.length} 条记录</span>\n${JSON.stringify(data, null, 2)}`;
+        } else {
+          resultEl.innerHTML = `<span class="error">❌ 失败！</span>\n状态码: ${response.status}\n${JSON.stringify(data, null, 2)}`;
+        }
+      } catch (error) {
+        resultEl.innerHTML = `<span class="error">❌ 错误！</span>\n${error.message}`;
+      }
+    }
+
+    async function testGetStats() {
+      const resultEl = document.getElementById('stats-result');
+      resultEl.textContent = '正在测试...';
+      
+      try {
+        const response = await fetch(`${API_BASE}/running/1/stats?year=2024&semester=1`);
+        const data = await response.json();
+        
+        if (response.ok) {
+          resultEl.innerHTML = `<span class="success">✅ 成功！</span>\n总次数: ${data.totalRuns}\n成功次数: ${data.successfulRuns}\n平均距离: ${Math.round(data.averageDistance)}米\n平均时长: ${Math.round(data.averageDuration)}秒\n\n完整数据:\n${JSON.stringify(data, null, 2)}`;
+        } else {
+          resultEl.innerHTML = `<span class="error">❌ 失败！</span>\n状态码: ${response.status}\n${JSON.stringify(data, null, 2)}`;
+        }
+      } catch (error) {
+        resultEl.innerHTML = `<span class="error">❌ 错误！</span>\n${error.message}`;
+      }
+    }
+
+    // 页面加载时自动显示API信息
+    console.log('[API测试] API_BASE:', API_BASE);
+    console.log('[API测试] 当前URL:', window.location.href);
+  </script>
+</body>
+</html>

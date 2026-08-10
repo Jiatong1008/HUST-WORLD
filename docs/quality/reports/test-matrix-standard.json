@@ -1,0 +1,108 @@
+{
+  "title": "HUST WORLD Test Matrix Report",
+  "tier": "standard",
+  "description": "Recommended regression before committing feature work.",
+  "startedAt": "2026-08-10T06:34:06.321Z",
+  "finishedAt": "2026-08-10T06:35:50.864Z",
+  "port": "4000",
+  "baseUrl": "http://localhost:4000",
+  "results": [
+    {
+      "script": "quality:gate",
+      "status": 0,
+      "durationMs": 6920,
+      "ok": true
+    },
+    {
+      "script": "check:config",
+      "status": 0,
+      "durationMs": 1487,
+      "ok": true
+    },
+    {
+      "script": "smoke:api",
+      "status": 0,
+      "durationMs": 2135,
+      "ok": true
+    },
+    {
+      "script": "cleanup:smoke",
+      "status": 0,
+      "durationMs": 1520,
+      "ok": true
+    },
+    {
+      "script": "smoke:api",
+      "status": 0,
+      "durationMs": 1991,
+      "ok": true
+    },
+    {
+      "script": "test:services",
+      "status": 0,
+      "durationMs": 1778,
+      "ok": true
+    },
+    {
+      "script": "test:campus-week",
+      "status": 0,
+      "durationMs": 6649,
+      "ok": true
+    },
+    {
+      "script": "test:dashboard",
+      "status": 0,
+      "durationMs": 2852,
+      "ok": true
+    },
+    {
+      "script": "test:panels-ui",
+      "status": 0,
+      "durationMs": 7111,
+      "ok": true
+    },
+    {
+      "script": "test:ui-layout",
+      "status": 0,
+      "durationMs": 10098,
+      "ok": true
+    },
+    {
+      "script": "test:responsive",
+      "status": 0,
+      "durationMs": 7910,
+      "ok": true
+    },
+    {
+      "script": "test:e2e",
+      "status": 0,
+      "durationMs": 13842,
+      "ok": true
+    },
+    {
+      "script": "test:npc",
+      "status": 0,
+      "durationMs": 31812,
+      "ok": true
+    },
+    {
+      "script": "test:quest",
+      "status": 0,
+      "durationMs": 6977,
+      "ok": true
+    },
+    {
+      "script": "cleanup:smoke",
+      "status": 0,
+      "durationMs": 1457,
+      "ok": true
+    }
+  ],
+  "removedTransientScreenshots": [
+    "test-npc-dialogue-result.png",
+    "test-npc-map-result.png",
+    "test-quest-system-result.png",
+    "test-shop-result.png"
+  ],
+  "passed": true
+}

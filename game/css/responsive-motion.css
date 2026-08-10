@@ -1,0 +1,219 @@
+html {
+  overflow-x: clip;
+  text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  overflow-x: clip;
+  min-width: 0;
+  touch-action: manipulation;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+button,
+[role="button"],
+a,
+input,
+select,
+textarea,
+.hw-button,
+.hw-tab,
+.gd-nav-btn,
+.mini-btn,
+.poi-action-btn,
+.scene-action-btn,
+.scene-npc-btn,
+.scene-module-btn,
+.quest-btn,
+.npc-dialogue-option {
+  min-height: 44px;
+  touch-action: manipulation;
+}
+
+button:focus-visible,
+[role="button"]:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+.hw-button:focus-visible,
+.hw-tab:focus-visible,
+.gd-nav-btn:focus-visible,
+.mini-btn:focus-visible,
+.poi-action-btn:focus-visible,
+.scene-action-btn:focus-visible,
+.scene-npc-btn:focus-visible,
+.scene-module-btn:focus-visible,
+.quest-card:focus-visible,
+.npc-dialogue-option:focus-visible {
+  outline: 2px solid var(--hw-gold, #F5C542);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 4px rgba(245, 197, 66, 0.16);
+}
+
+.hw-panel,
+.hw-card,
+.gd-hud-card,
+.gd-panel,
+.npc-dialogue-panel,
+.quest-ui-panel,
+.quest-poi-panel,
+#sidePanel,
+#map-scene-overlay,
+#busPanel {
+  max-width: calc(100vw - 16px);
+}
+
+.hw-modal-content,
+.hw-dialog-content,
+.gd-panel-body,
+.npc-dialogue-body,
+.quest-ui-body,
+.quest-poi-panel,
+#sidePanel,
+#map-scene-overlay,
+#busPanel {
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
+
+.hw-tabs,
+.hw-segmented,
+.gd-nav-bar {
+  scrollbar-width: none;
+}
+
+.hw-tabs::-webkit-scrollbar,
+.hw-segmented::-webkit-scrollbar,
+.gd-nav-bar::-webkit-scrollbar {
+  display: none;
+}
+
+.hw-animate-in {
+  animation: hw-soft-enter var(--hw-transition-normal, 0.25s ease-out) both;
+}
+
+.hw-pressable {
+  transition:
+    transform var(--hw-transition-fast, 0.15s ease-out),
+    border-color var(--hw-transition-fast, 0.15s ease-out),
+    background var(--hw-transition-fast, 0.15s ease-out),
+    box-shadow var(--hw-transition-fast, 0.15s ease-out);
+}
+
+.hw-pressable:hover {
+  transform: translateY(-1px);
+}
+
+.hw-pressable:active {
+  transform: translateY(0);
+}
+
+@keyframes hw-soft-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 900px) {
+  :root {
+    --hw-mobile-edge: max(10px, env(safe-area-inset-left));
+  }
+
+  .hw-modal,
+  .hw-dialog {
+    padding: max(10px, env(safe-area-inset-top)) max(10px, env(safe-area-inset-right)) max(10px, env(safe-area-inset-bottom)) max(10px, env(safe-area-inset-left));
+  }
+
+  .hw-panel,
+  .hw-card {
+    border-radius: var(--hw-radius-md, 8px);
+  }
+
+  .hw-button,
+  .gd-nav-btn,
+  .mini-btn,
+  .poi-action-btn,
+  .scene-action-btn,
+  .scene-npc-btn,
+  .scene-module-btn,
+  .quest-btn,
+  .npc-dialogue-option {
+    min-height: 46px;
+  }
+}
+
+@media (max-width: 520px) {
+  .hw-title,
+  .hw-modal-title,
+  .hw-dialog-title,
+  .gd-panel-title {
+    font-size: 17px;
+    line-height: 1.35;
+  }
+
+  .hw-modal-footer,
+  .hw-dialog-footer,
+  .gd-panel-footer {
+    flex-wrap: wrap;
+  }
+
+  .hw-modal-footer .hw-button,
+  .hw-dialog-footer .hw-button,
+  .gd-panel-footer .hw-button {
+    flex: 1 1 140px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0s !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0s !important;
+    transition-delay: 0s !important;
+  }
+
+  .hw-button:hover:not(:disabled),
+  .hw-card:hover,
+  .gd-hud-card:hover,
+  .gd-nav-btn:hover,
+  .hw-pressable:hover {
+    transform: none !important;
+  }
+
+  .hw-animate-in,
+  .map-toast,
+  .gd-panel,
+  .gd-overlay {
+    animation: none !important;
+    transition-duration: 0s !important;
+  }
+
+  .gd-panel.gd-open {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .gd-overlay.gd-open {
+    opacity: 1 !important;
+  }
+
+  .map-toast.show {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}

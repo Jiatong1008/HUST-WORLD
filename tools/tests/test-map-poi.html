@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HUST WORLD 地图 POI 调试</title>
+<style>
+  body { font-family: 'Microsoft YaHei', Arial, sans-serif; background: #0c0e21; color: #e5e7eb; margin: 0; padding: 20px; }
+  h1 { color: #ffd700; font-size: 22px; margin-bottom: 12px; }
+  h2 { color: #60a5fa; font-size: 16px; margin-top: 24px; }
+  .panel { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,215,0,0.15); border-radius: 12px; padding: 16px; margin-bottom: 16px; }
+  .btn { padding: 8px 14px; margin: 4px 4px 4px 0; border: 1px solid rgba(255,215,0,0.3); background: rgba(255,215,0,0.08); color: #ffd700; border-radius: 8px; cursor: pointer; font-weight: 600; }
+  .btn:hover { background: rgba(255,215,0,0.15); }
+  .log { background: rgba(0,0,0,0.3); border-radius: 8px; padding: 12px; font-family: monospace; font-size: 12px; max-height: 300px; overflow-y: auto; white-space: pre-wrap; margin-top: 12px; }
+  .status-ok { color: #4ade80; }
+  .status-warn { color: #facc15; }
+  .status-err { color: #f87171; }
+  table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px; }
+  th, td { border: 1px solid rgba(255,255,255,0.08); padding: 6px; text-align: left; }
+  th { background: rgba(255,255,255,0.06); color: #ffd700; }
+</style>
+</head>
+<body>
+
+<h1>🗺️ HUST WORLD 地图 POI 调试面板</h1>
+
+<div class="panel">
+  <div id="current-scene">当前场景：campus</div>
+  <div id="progress-summary">加载中...</div>
+</div>
+
+<div class="panel">
+  <button class="btn" onclick="debugMapPoiBindings()">🔍 测试 POI 解析</button>
+  <button class="btn" onclick="debugClickPoi('大学生活动中心')">📍 模拟点击社团 POI</button>
+  <button class="btn" onclick="debugClickPoi('东操场')">🏃 模拟点击跑步 POI</button>
+  <button class="btn" onclick="debugClickPoi('图书馆')">🧭 模拟点击探索 POI</button>
+  <button class="btn" onclick="debugApproachPoi('大学生活动中心')">🚶 模拟靠近社团 POI</button>
+  <button class="btn" onclick="debugTrackQuest('club_join', 'side')">🎯 追踪 club_join</button>
+  <button class="btn" onclick="debugTrackQuest('run_first', 'side')">🎯 追踪 run_first</button>
+</div>
+
+<div class="panel">
+  <button class="btn" onclick="debugTriggerClubJoin()">🏛️ 触发 club_join</button>
+  <button class="btn" onclick="debugTriggerRunFirst()">🏃 触发 run_first</button>
+  <button class="btn" onclick="debugTriggerExploreFirst()">🧭 触发 explore_first</button>
+  <button class="btn" onclick="debugEnterScene('library_inside')">📚 进入图书馆</button>
+  <button class="btn" onclick="debugEnterScene('dorm_inside')">🛏️ 进入宿舍</button>
+  <button class="btn" onclick="debugEnterScene('classroom_inside')">🏫 进入教室</button>
+  <button class="btn" onclick="debugReturnCampus()">🏠 返回校园</button>
+  <button class="btn" onclick="debugResetSideQuests()">🔄 重置支线</button>
+  <button class="btn" onclick="debugExportFullProgress()">📤 导出完整进度</button>
+  <button class="btn" onclick="debugExportPoiReport()">📄 导出 POI 报告</button>
+</div>
+
+<div class="panel">
+  <h2>POI 绑定状态</h2>
+  <div id="poi-status">未测试</div>
+  <table id="poi-table">
+    <thead>
+      <tr><th>任务ID</th><th>名称</th><th>类型</th><th>分组</th><th>POI</th><th>状态</th></tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
+
+<div class="panel">
+  <h2>日志</h2>
+  <div id="log" class="log"></div>
+</div>
+
+<script src="/game/js/core/SaveManager.js"></script>
+<script type="module" src="test-map-poi-main.js"></script>
+
+</body>
+</html>

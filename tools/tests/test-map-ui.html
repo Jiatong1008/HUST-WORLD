@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>地图 UI 浏览器测试</title>
+  <link rel="stylesheet" href="../../map/css/style.css">
+  <link rel="stylesheet" href="../../game/css/ui-theme.css">
+  <link rel="stylesheet" href="../../game/css/responsive-motion.css">
+  <style>
+    body { background: #101828; color: #e5e7eb; font-family: "Microsoft YaHei", sans-serif; padding: 20px; }
+    #status { margin-top: 20px; font-size: 14px; }
+    .pass { color: #4ade80; }
+    .fail { color: #f87171; }
+  </style>
+  <link rel="stylesheet" href="/game/css/cinematic-polish.css?v=1">
+</head>
+
+<body class="hw-debug-screen">
+  <h1>地图 UI 测试页</h1>
+  <p><a href="../../map/index.html">打开地图页面</a> 进行手动验证。</p>
+  <div id="hud" style="position:fixed; top:10px; left:10px; padding:10px; background:rgba(0,0,0,0.5); color:#fff;">HUD</div>
+  <div id="status"></div>
+
+  <script type="module">
+    import { UIManager } from '../../map/js/UIManager.js';
+    const status = document.getElementById('status');
+    function write(msg, ok) {
+      const div = document.createElement('div');
+      div.className = ok ? 'pass' : 'fail';
+      div.textContent = msg;
+      status.appendChild(div);
+    }
+
+    const ui = new UIManager();
+    window.UIManager = UIManager;
+    window._uiInstance = ui;
+    const hasHud = !!document.getElementById('hud');
+    write('UIManager 实例化: ' + (ui ? '成功' : '失败'), !!ui);
+    write('HUD 容器存在: ' + (hasHud ? '是' : '否'), hasHud);
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,12 @@
+.git
+.env
+.env.*
+!.env.example
+node_modules
+mysql-data
+.hust-world-mysql
+logs
+docs/showcase/screenshots
+tools/tests/*.png
+tools/tests/*-report.json
+npm-debug.log*

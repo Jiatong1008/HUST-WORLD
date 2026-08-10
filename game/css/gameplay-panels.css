@@ -1,0 +1,66 @@
+:root { --hw-panel-max: 920px; }
+
+.hw-panel-kicker { color: var(--hw-gold); font-size: 11px; font-weight: 800; text-transform: uppercase; }
+.hw-panel-subtitle { color: var(--hw-text-muted); font-size: 12px; line-height: 1.55; }
+
+.hw-segmented { display: flex; gap: 4px; padding: 4px; overflow-x: auto; border: 1px solid var(--hw-border); border-radius: var(--hw-radius-md); background: rgba(8, 11, 20, 0.45); }
+.hw-segmented button { min-height: 34px; flex: 0 0 auto; padding: 6px 12px; border: 0; border-radius: 6px; color: var(--hw-text-muted); background: transparent; cursor: pointer; font: inherit; font-size: 12px; font-weight: 700; }
+.hw-segmented button:hover, .hw-segmented button:focus-visible { color: var(--hw-text); background: rgba(255, 255, 255, 0.06); }
+.hw-segmented button.is-active { color: #08111f; background: var(--hw-gold); }
+
+.hw-detail-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--hw-space-3); }
+.hw-data-row { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--hw-space-3); padding: 9px 0; border-bottom: 1px solid rgba(148, 163, 184, 0.1); }
+.hw-data-row:last-child { border-bottom: 0; }
+.hw-data-row > span:first-child { color: var(--hw-text-muted); }
+.hw-data-row > strong { color: var(--hw-text); text-align: right; }
+.hw-state-message { display: flex; align-items: flex-start; gap: 10px; padding: 12px; border: 1px solid var(--hw-border); border-radius: var(--hw-radius-md); color: var(--hw-text-muted); background: rgba(255, 255, 255, 0.025); font-size: 12px; line-height: 1.55; }
+.hw-state-message strong { display: block; color: var(--hw-text); margin-bottom: 2px; }
+
+.npc-dialogue-panel { position: relative; width: min(720px, calc(100vw - 32px)) !important; max-height: min(88vh, 760px) !important; }
+.npc-dialogue-header { min-height: 74px; }
+.npc-dialogue-name { font-size: 18px !important; }
+.npc-dialogue-body { padding: 20px !important; }
+.npc-dialogue-text { font-size: 15px !important; line-height: 1.8 !important; }
+.npc-dialogue-progress { margin-bottom: 14px; color: var(--hw-text-muted); font-size: 11px; }
+.npc-dialogue-progress strong { color: var(--hw-gold); }
+.npc-dialogue-option { position: relative; min-height: 44px; padding-left: 46px !important; }
+.npc-dialogue-option-index { position: absolute; left: 12px; top: 50%; width: 24px; height: 24px; transform: translateY(-50%); display: grid; place-items: center; border: 1px solid var(--hw-border); border-radius: 6px; color: var(--hw-gold); background: rgba(8, 11, 20, 0.45); font-size: 11px; font-weight: 800; }
+.npc-dialogue-option:disabled { opacity: 0.48; cursor: not-allowed; }
+.npc-dialogue-option-reason { display: block; margin-top: 3px; color: var(--hw-text-dim); font-size: 11px; }
+.npc-dialogue-effects { display: flex; flex-wrap: wrap; gap: 6px; }
+.npc-dialogue-effects .hw-tag { color: var(--hw-success); }
+.npc-dialogue-shop-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+.npc-dialogue-wallet { color: var(--hw-gold); font-size: 13px; font-weight: 800; }
+.npc-dialogue-shop-item { min-height: 170px; }
+.npc-dialogue-shop-item[disabled] { opacity: 0.5; cursor: not-allowed; }
+.npc-dialogue-shop-item-icon { font-size: 28px; }
+.npc-dialogue-shop-owned { color: var(--hw-text-muted); font-size: 11px; }
+
+.quest-ui-panel { position: relative; width: min(var(--hw-panel-max), calc(100vw - 32px)) !important; }
+.quest-ui-header-copy { min-width: 0; }
+.quest-ui-title { margin-bottom: 3px !important; }
+.quest-ui-summary { color: var(--hw-text-muted); font-size: 12px; }
+.quest-card { position: relative; flex: 0 0 auto; height: auto !important; }
+.quest-card.is-tracked { border-color: rgba(245, 197, 66, 0.55) !important; }
+.quest-card.is-tracked::after { content: "追踪中"; position: absolute; top: 11px; right: 11px; padding: 2px 6px; border: 1px solid rgba(245, 197, 66, 0.3); border-radius: 4px; color: var(--hw-gold); background: rgba(8, 17, 30, 0.88); font-size: 10px; font-weight: 800; line-height: 1.4; }
+.quest-detail-section { border-top: 1px solid rgba(148, 163, 184, 0.1); padding-top: 14px; }
+.quest-objective-progress { color: var(--hw-text-muted); font-size: 11px; }
+.quest-ui-list,
+.quest-ui-detail { scrollbar-color: rgba(159, 181, 214, 0.28) transparent; scrollbar-width: thin; }
+.quest-ui-list::-webkit-scrollbar,
+.quest-ui-detail::-webkit-scrollbar { width: 5px; }
+.quest-ui-list::-webkit-scrollbar-thumb,
+.quest-ui-detail::-webkit-scrollbar-thumb { border-radius: 999px; background: rgba(159, 181, 214, 0.28); }
+
+@media (max-width: 720px) {
+  .hw-detail-grid { grid-template-columns: 1fr; }
+  .npc-dialogue-overlay, .quest-ui-overlay { padding: 0 !important; align-items: flex-end !important; }
+  .npc-dialogue-panel, .quest-ui-panel { width: 100% !important; max-height: 92dvh !important; border-radius: 10px 10px 0 0 !important; }
+  .npc-dialogue-body { padding: 16px !important; }
+  .npc-dialogue-option { min-height: 48px; }
+  .npc-dialogue-shop-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .npc-dialogue-panel, .quest-ui-panel, .hw-segmented button { transition: none !important; animation: none !important; }
+}

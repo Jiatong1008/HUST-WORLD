@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>角色图片调试</title>
+  <style>
+    body {
+      font-family: 'Microsoft YaHei', Arial, sans-serif;
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    h1 {
+      color: #333;
+      border-bottom: 2px solid #4CAF50;
+      padding-bottom: 10px;
+    }
+    .test-section {
+      background: white;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    button {
+      background: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      margin: 5px;
+    }
+    button:hover {
+      background: #45a049;
+    }
+    pre {
+      background: #f8f8f8;
+      padding: 15px;
+      border-radius: 4px;
+      overflow-x: auto;
+      font-size: 12px;
+    }
+    .success {
+      color: #4CAF50;
+      font-weight: bold;
+    }
+    .error {
+      color: #f44336;
+      font-weight: bold;
+    }
+    .info {
+      background: #e3f2fd;
+      padding: 10px;
+      border-left: 4px solid #2196F3;
+      margin: 10px 0;
+    }
+    img {
+      border: 2px solid #ddd;
+      margin: 10px;
+      max-width: 200px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎭 角色图片调试工具</h1>
+  
+  <div class="info">
+    <strong>当前localStorage中的性别：</strong> <span id="current-gender">-</span><br>
+    <strong>图片管理器状态：</strong> <span id="image-status">检测中...</span>
+  </div>
+
+  <div class="test-section">
+    <h2>1️ 测试图片加载</h2>
+    <button onclick="testImageLoading()">重新加载图片</button>
+    <div id="image-preview"></div>
+    <pre id="image-result">等待测试...</pre>
+  </div>
+
+  <div class="test-section">
+    <h2>2️ 测试性别切换</h2>
+    <button onclick="setGender('male')">设置为男性</button>
+    <button onclick="setGender('female')">设置为女性</button>
+    <button onclick="clearGender()">清除性别设置</button>
+    <pre id="gender-result">等待操作...</pre>
+  </div>
+
+  <script>
+    // 显示当前性别
+    function updateGenderDisplay() {
+      const gender = localStorage.getItem('character_gender') || '未设置';
+      document.getElementById('current-gender').textContent = gender;
+    }
+    
+    updateGenderDisplay();
+
+    async function testImageLoading() {
+      const resultEl = document.getElementById('image-result');
+      const previewEl = document.getElementById('image-preview');
+      
+      resultEl.textContent = '正在加载图片...';
+      previewEl.innerHTML = '';
+      
+      try {
+        // 加载男玩家图片
+        const maleImg = new Image();
+        maleImg.onload = () => {
+          console.log('[测试] 男玩家图片加载成功');
+        };
+        maleImg.onerror = (e) => {
+          console.error('[测试] 男玩家图片加载失败:', e);
+        };
+        maleImg.src = '/map/images/玩家（男）.png';
+        
+        // 加载女玩家图片
+        const femaleImg = new Image();
+        femaleImg.onload = () => {
+          console.log('[测试] 女玩家图片加载成功');
+        };
+        femaleImg.onerror = (e) => {
+          console.error('[测试] 女玩家图片加载失败:', e);
+        };
+        femaleImg.src = '/map/images/玩家（女）.png';
+        
+        // 等待图片加载
+        await Promise.all([
+          new Promise((resolve) => maleImg.onload = resolve),
+          new Promise((resolve) => femaleImg.onload = resolve)
+        ]).catch(() => {});
+        
+        // 显示预览
+        previewEl.innerHTML = `
+          <h3>男玩家图片：</h3>
+          <img src="/map/images/玩家（男）.png" alt="男玩家"><br>
+          <h3>女玩家图片：</h3>
+          <img src="/map/images/玩家（女）.png" alt="女玩家">
+        `;
+        
+        resultEl.innerHTML = `<span class="success">✅ 图片加载成功！</span>\n\n男玩家图片尺寸: ${maleImg.naturalWidth}x${maleImg.naturalHeight}\n女玩家图片尺寸: ${femaleImg.naturalWidth}x${femaleImg.naturalHeight}`;
+        document.getElementById('image-status').textContent = '已加载';
+      } catch (error) {
+        resultEl.innerHTML = `<span class="error">❌ 错误！</span>\n${error.message}`;
+        document.getElementById('image-status').textContent = '加载失败';
+      }
+    }
+
+    function setGender(gender) {
+      localStorage.setItem('character_gender', gender);
+      updateGenderDisplay();
+      document.getElementById('gender-result').innerHTML = 
+        `<span class="success">✅ 性别已设置为: ${gender}</span>\n请刷新游戏页面查看效果`;
+    }
+
+    function clearGender() {
+      localStorage.removeItem('character_gender');
+      updateGenderDisplay();
+      document.getElementById('gender-result').innerHTML = 
+        `<span class="info">️ 性别设置已清除，下次启动将显示选择界面</span>`;
+    }
+
+    // 自动测试图片加载
+    window.addEventListener('load', () => {
+      setTimeout(testImageLoading, 500);
+    });
+  </script>
+</body>
+</html>

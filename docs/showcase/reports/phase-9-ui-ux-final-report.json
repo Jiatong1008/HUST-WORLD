@@ -1,0 +1,43 @@
+{
+  "title": "HUST WORLD Phase 9 UI/UX Final Acceptance",
+  "baseUrl": "http://localhost:4000",
+  "startedAt": "2026-07-12T01:38:06.770Z",
+  "finishedAt": "2026-07-12T01:38:14.357Z",
+  "checks": [
+    "dashboard desktop visual capture",
+    "inventory mobile visual capture",
+    "map desktop visual capture",
+    "npc dialogue visual capture",
+    "quest log visual capture",
+    "horizontal overflow guard",
+    "page error guard"
+  ],
+  "screenshots": [
+    {
+      "name": "phase9-dashboard-desktop.png",
+      "path": "docs/showcase/screenshots/phase9-dashboard-desktop.png",
+      "size": 81768
+    },
+    {
+      "name": "phase9-inventory-mobile.png",
+      "path": "docs/showcase/screenshots/phase9-inventory-mobile.png",
+      "size": 120134
+    },
+    {
+      "name": "phase9-map-desktop.png",
+      "path": "docs/showcase/screenshots/phase9-map-desktop.png",
+      "size": 148977
+    },
+    {
+      "name": "phase9-npc-dialogue.png",
+      "path": "docs/showcase/screenshots/phase9-npc-dialogue.png",
+      "size": 190734
+    },
+    {
+      "name": "phase9-quest-log.png",
+      "path": "docs/showcase/screenshots/phase9-quest-log.png",
+      "size": 245305
+    }
+  ],
+  "passed": true
+}

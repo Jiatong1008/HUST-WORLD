@@ -1,0 +1,1194 @@
+{
+  "backgroundcolor": "#000000",
+  "compressionlevel": -1,
+  "height": 4000,
+  "infinite": false,
+  "layers": [
+    {
+      "draworder": "topdown",
+      "id": 1,
+      "name": "locations",
+      "objects": [
+        {
+          "height": 385,
+          "id": 1,
+          "name": "韵苑宿舍",
+          "opacity": 1,
+          "properties": [
+            {
+              "name": "description",
+              "type": "string",
+              "value": "本科生宿舍区，韵苑生活气息浓厚，夜晚常能听到吉他声和夜宵摊的热闹。"
+            },
+            {
+              "name": "map_id",
+              "type": "int",
+              "value": 1
+            }
+          ],
+          "rotation": 0,
+          "type": "dormitory",
+          "visible": true,
+          "width": 218,
+          "x": 5309.66666666667,
+          "y": 1341.33333333333
+        },
+        {
+          "height": 386.666666666667,
+          "id": 2,
+          "name": "沁苑宿舍",
+          "opacity": 1,
+          "properties": [
+            {
+              "name": "description",
+              "type": "string",
+              "value": "本科生宿舍区"
+            },
+            {
+              "name": "map_id",
+              "type": "int",
+              "value": 2
+            }
+          ],
+          "rotation": 0,
+          "type": "dormitory",
+          "visible": true,
+          "width": 417.333333333334,
+          "x": 3417,
+          "y": 1548
+        },
+        {
+          "height": 336,
+          "id": 3,
+          "name": "紫菘宿舍",
+          "opacity": 1,
+          "properties": [
+            {
+              "name": "description",
+              "type": "string",
+              "value": "本科生宿舍区，紫菘地处西区，离西十二和操场都很近。"
+            },
+            {
+              "name": "map_id",
+              "type": "int",
+              "value": 3
+            }
+          ],
+          "rotation": 0,
+          "type": "dormitory",
+          "visible": true,
+          "width": 456,
+          "x": 787.66666666667,
+          "y": 2017.33333333333
+        },
+        {
+          "height": 61.6666666666667,
+          "id": 4,
+          "name": "东园食堂",
+          "opacity": 1,
+          "properties": [
+            {
+              "name": "description",
+              "type": "string",
+              "value": "东校区食堂"
+            },
+            {
+              "name": "map_id",
+              "type": "int",
+              "value": 4
+            }
+          ],
+          "rotation": 0,
+          "type": "canteen",
+          "visible": true,
+          "width": 98.9999999999991,
+          "x": 5748,
+          "y": 1804
+        },
+        {
+          "height": 60.6666666666665,
+          "id": 5,
+          "name": "韵苑食堂",
+          "opacity": 1,
+          "properties": [
+            {
+              "name": "description",
+              "type": "string",
+              "value": "韵苑宿舍附近的重要补给站，早餐选择丰富。"
+            },
+            {
+              "name": "map_id",
+              "type": "int",
+              "value": 5
+            }
+          ],
+          "rotation": 0,
+          "type": "canteen",
+          "visible": true,
+          "width": 84.666666666667,
+          "x": 5163.66666666666,
+          "y": 1630.66666666667
+        },
+        {
+          "height": 54,
+          "id": 6,
+          "name": "学一食堂",
+          "opacity": 1,
+          "properties": [
+            {
+              "name": "description",
+              "type": "string",
+              "value": "主校区食堂"
+            },
+            {
+              "name": "map_id",
+              "type": "int",
+              "value": 6
+            }
+          ],
+          "rotation": 0,
+          "type": "canteen",
+          "visible": true,
+          "width": 88,
+          "x": 5138.66666666667,
+          "y": 2143.66666666667
+        },
+        {
+          "height": 126.333333333333,
+          "id": 7,
+          "name": "百景园食堂",
+          "opacity": 1,
+          "properties": [
+            {
+              "name": "description",
+              "type": "string",
+              "value": "以菜品丰富著称，素有“华科食堂名片”之称。"
+            },
+            {
+              "name": "map_id",
+              "type": "int",
+              "value": 7
+            }
+          ],
+          "rotation": 0,
+          "type": "canteen",
+          "visible": true,
+          "width": 105.666666666667,
+          "x": 1669.66666666667,
+          "y": 1337.66666666667
+        },
+        {
+          "height": 49,
+          "id": 8,
+          "name": "西一食堂",
+          "opacity": 1,
+          "properties": [
+            {
+              "name": "description",
+              "type": "string",
+              "value": "西校区食堂"
+            },
+            {
+              "name": "map_id",
+              "type": "int",
+              "value": 8
+            }
+          ],
+          "rotation": 0,
+          "type": "canteen",
+          "visible": true,
+          "width": 115,
+          "x": 1489,
+          "y": 1590.66666666667
+        },
+        {
+          "height": 310.666666666667,
+          "id": 9,
+          "name": "东九教学楼",
+          "opacity": 1,
+          "properties": [
+            {
+              "name": "description",
+              "type": "string",
+              "value": "亚洲第一大教学楼"
+            },
+            {
+              "name": "map_id",
+              "type": "int",
+              "value": 9
+            }
+          ],
+          "rotation": 0,
+          "type": "teaching_building",
+          "visible": true,
+          "width": 182.666666666667,
+          "x": 4409.33333333334,
+          "y": 1716
+        },
+        {
+          "height": 116,
+          "id": 10,
+          "name": "西十二教学楼",
+          "opacity": 1,
+          "properties": [
+            {
+              "name": "description",
+              "type": "string",
+              "value": "亚洲第三大教学楼，走廊长、教室多，迷路是新生必修课。"
+            },
+            {
+              "name": "map_id",
+              "type": "int",
+              "value": 10
+            }
+          ],
+          "rotation": 0,
+          "type": "teaching_building",
+          "visible": true,
+          "width": 271,
+          "x": 1495,
+          "y": 2539
+        },
+        {
+          "height": 82,
+          "id": 11,
+          "name": "东十二教学楼",
+          "opacity": 1,
+          "properties": [
+            {
+              "name": "description",
+              "type": "string",
+              "value": "东校区教学楼"
+            },
+            {
+              "name": "map_id",
+              "type": "int",
+              "value": 11
+            }
+          ],
+          "rotation": 0,
+          "type": "teaching_building",
+          "visible": true,
+          "width": 169.5,
+          "x": 5412.16666666667,
+          "y": 2023.5
+        },
+        {
+          "height": 132,
+          "id": 12,
+          "name": "管理学院",
+          "opacity": 1,
+          "properties": [
+            {
+              "name": "description",
+              "type": "string",
+              "value": "管理学院所在地，案例分析和创业比赛从这里出发。"
+            },
+            {
+              "name": "map_id",
+              "type": "int",
+              "value": 12
+            }
+          ],
+          "rotation": 0,
+          "type": "college",
+          "visible": true,
+          "width": 312,
+          "x": 2798.33333333333,
+          "y": 1452
+        },
+        {
+          "height": 231,
+          "id": 13,
+          "name": "计算机学院",
+          "opacity": 1,
+          "properties": [
+            {
+              "name": "description",
+              "type": "string",
+              "value": "计算机科学与技术学院，程序员浓度极高，夜里常有宿舍台灯和键盘声。"
+            },
+            {
+              "name": "map_id",
+              "type": "int",
+              "value": 13
+            }
+          ],
+          "rotation": 0,
+          "type": "college",
+          "visible": true,
+          "width": 301,
+          "x": 4799.66666666667,
+          "y": 2260.33333333333
+        },
+        {
+          "height": 77,
+          "id": 14,
+          "name": "电气学院",
+          "opacity": 1,
+          "properties": [
+            {
+              "name": "description",
+              "type": "string",
+              "value": "电气与电子工程学院，强电弱电皆有江湖。"
+            },
+            {
+              "name": "map_id",
+              "type": "int",
+              "value": 14
+            }
+          ],
+          "rotation": 0,
+          "type": "college",
+          "visible": true,
+          "width": 90,
+          "x": 1564.33333333333,
+          "y": 2272.66666666667
+        },
+        {
+          "height": 145.333333333333,
+          "id": 15,
+          "name": "机械学院",
+          "opacity": 1,
+          "properties": [
+            {
+              "name": "description",
+              "type": "string",
+              "value": "机械科学与工程学院，车间和图纸是这里的日常。"
+            },
+            {
+              "name": "map_id",
+              "type": "int",
+              "value": 15
+            }
+          ],
+          "rotation": 0,
+          "type": "college",
+          "visible": true,
+          "width": 245.333333333333,
+          "x": 3118.66666666667,
+          "y": 1792
+        },
+        {
+          "height": 92.3333333333333,
+          "id": 16,
+          "name": "爱因斯坦广场",
+          "opacity": 1,
+          "properties": [
+            {
+              "name": "description",
+              "type": "string",
+              "value": "华科校园地标广场，毕业季拍照打卡圣地。"
+            },
+            {
+              "name": "map_id",
+              "type": "int",
+              "value": 16
+            }
+          ],
+          "rotation": 0,
+          "type": "landmark",
+          "visible": true,
+          "width": 39,
+          "x": 5721.5,
+          "y": 1683.33333333333
+        },
+        {
+          "height": 248.666666666667,
+          "id": 17,
+          "name": "青年园",
+          "opacity": 1,
+          "properties": [
+            {
+              "name": "description",
+              "type": "string",
+              "value": "校园中心绿地，银杏金黄时是华科最具代表性的画面。"
+            },
+            {
+              "name": "map_id",
+              "type": "int",
+              "value": 17
+            }
+          ],
+          "rotation": 0,
+          "type": "landmark",
+          "visible": true,
+          "width": 111.333333333333,
+          "x": 1999.33333333333,
+          "y": 1836.83333333333
+        },
+        {
+          "height": 164,
+          "id": 18,
+          "name": "醉晚亭",
+          "opacity": 1,
+          "properties": [
+            {
+              "name": "description",
+              "type": "string",
+              "value": "镜湖边的古亭，夏夜常有人弹唱，醉晚亭文艺气息满满。"
+            },
+            {
+              "name": "map_id",
+              "type": "int",
+              "value": 18
+            }
+          ],
+          "rotation": 0,
+          "type": "landmark",
+          "visible": true,
+          "width": 113,
+          "x": 3056,
+          "y": 2300.66666666667
+        },
+        {
+          "height": 194.333333333333,
+          "id": 19,
+          "name": "主图书馆",
+          "opacity": 1,
+          "properties": [
+            {
+              "name": "description",
+              "type": "string",
+              "value": "华科知识殿堂，期末周的座位总是一早就被占满。"
+            },
+            {
+              "name": "map_id",
+              "type": "int",
+              "value": 19
+            }
+          ],
+          "rotation": 0,
+          "type": "landmark",
+          "visible": true,
+          "width": 137.666666666667,
+          "x": 2190.66666666666,
+          "y": 1882
+        },
+        {
+          "height": 254.181818181818,
+          "id": 20,
+          "name": "喻家山",
+          "opacity": 1,
+          "properties": [
+            {
+              "name": "description",
+              "type": "string",
+              "value": "校园背后的城市绿肺，被称为“森林大学”的天然氧吧。"
+            },
+            {
+              "name": "map_id",
+              "type": "int",
+              "value": 20
+            }
+          ],
+          "rotation": 0,
+          "type": "landmark",
+          "visible": true,
+          "width": 2058.06060606061,
+          "x": 2380.60606060606,
+          "y": 629.757575757576
+        },
+        {
+          "height": 418,
+          "id": 21,
+          "name": "光电国家研究中心",
+          "opacity": 1,
+          "properties": [
+            {
+              "name": "description",
+              "type": "string",
+              "value": "国家光电研究中心，华科光电领域的核心阵地，实验室灯火通明。"
+            },
+            {
+              "name": "map_id",
+              "type": "int",
+              "value": 21
+            }
+          ],
+          "rotation": 0,
+          "type": "landmark",
+          "visible": true,
+          "width": 158,
+          "x": 5408,
+          "y": 2677
+        },
+        {
+          "id": 22,
+          "name": "校医院",
+          "opacity": 1,
+          "properties": [
+            {
+              "name": "description",
+              "type": "string",
+              "value": "校园医疗保障点，小毛小病和体检都在这里。"
+            },
+            {
+              "name": "map_id",
+              "type": "int",
+              "value": 22
+            }
+          ],
+          "rotation": 0,
+          "type": "hospital",
+          "visible": true,
+          "width": 125.333333333333,
+          "x": 2635,
+          "y": 1113.33333333334
+        },
+        {
+          "height": 114,
+          "id": 23,
+          "name": "集贸市场",
+          "opacity": 1,
+          "properties": [
+            {
+              "name": "description",
+              "type": "string",
+              "value": "学生日常采购的好去处，水果、打印、小百货一应俱全。"
+            },
+            {
+              "name": "map_id",
+              "type": "int",
+              "value": 23
+            }
+          ],
+          "rotation": 0,
+          "type": "shop",
+          "visible": true,
+          "width": 136,
+          "x": 2522,
+          "y": 1254.33333333333
+        },
+        {
+          "height": 0,
+          "id": 24,
+          "name": "南大门",
+          "opacity": 1,
+          "properties": [
+            {
+              "name": "description",
+              "type": "string",
+              "value": "华科主校门，迎新和毕业季最热闹的地方，从此走进森林大学。"
+            },
+            {
+              "name": "map_id",
+              "type": "int",
+              "value": 24
+            }
+          ],
+          "rotation": 0,
+          "type": "landmark",
+          "visible": true,
+          "width": 0,
+          "x": 2526,
+          "y": 2773
+        },
+        {
+          "height": 20.3333333333333,
+          "id": 25,
+          "name": "韵苑巴士站",
+          "opacity": 1,
+          "properties": [
+            {
+              "name": "description",
+              "type": "string",
+              "value": "校园巴士重要站点，连接东区与西区的交通枢纽。"
+            },
+            {
+              "name": "map_id",
+              "type": "int",
+              "value": 25
+            }
+          ],
+          "rotation": 0,
+          "type": "bus_stop",
+          "visible": true,
+          "width": 22,
+          "x": 5250,
+          "y": 1723
+        },
+        {
+          "height": 0,
+          "id": 26,
+          "name": "紫菘巴士站",
+          "opacity": 1,
+          "properties": [
+            {
+              "name": "description",
+              "type": "string",
+              "value": "西区巴士站点，课间换乘人群众多。"
+            },
+            {
+              "name": "map_id",
+              "type": "int",
+              "value": 26
+            }
+          ],
+          "rotation": 0,
+          "type": "bus_stop",
+          "visible": true,
+          "width": 0,
+          "x": 1381,
+          "y": 2114
+        },
+        {
+          "height": 0,
+          "id": 27,
+          "name": "沁苑巴士站",
+          "opacity": 1,
+          "properties": [
+            {
+              "name": "description",
+              "type": "string",
+              "value": "靠近宿舍与图书馆的巴士站点。"
+            },
+            {
+              "name": "map_id",
+              "type": "int",
+              "value": 27
+            }
+          ],
+          "rotation": 0,
+          "type": "bus_stop",
+          "visible": true,
+          "width": 0,
+          "x": 3629.16666666667,
+          "y": 1990.5
+        },
+        {
+          "height": 0,
+          "id": 28,
+          "name": "图书馆巴士站",
+          "opacity": 1,
+          "properties": [
+            {
+              "name": "description",
+              "type": "string",
+              "value": "主图书馆门口的巴士站，去东西区都很方便。"
+            },
+            {
+              "name": "map_id",
+              "type": "int",
+              "value": 28
+            }
+          ],
+          "rotation": 0,
+          "type": "bus_stop",
+          "visible": true,
+          "width": 0,
+          "x": 2404.66666666667,
+          "y": 2001.33333333333
+        },
+        {
+          "height": 65.3333333333335,
+          "id": 29,
+          "name": "东九草坪",
+          "opacity": 1,
+          "properties": [
+            {
+              "name": "description",
+              "type": "string",
+              "value": "教学楼之间的开阔草坪，春秋常有社团活动和晒太阳的同学。"
+            },
+            {
+              "name": "map_id",
+              "type": "int",
+              "value": 29
+            }
+          ],
+          "rotation": 0,
+          "type": "playground",
+          "visible": true,
+          "width": 154.666666666666,
+          "x": 4688.33316666667,
+          "y": 1757.33333333333
+        },
+        {
+          "height": 212,
+          "id": 30,
+          "name": "东操场",
+          "opacity": 1,
+          "properties": [
+            {
+              "name": "description",
+              "type": "string",
+              "value": "东区主要运动场地，军训、体测和夜跑的热门地。"
+            },
+            {
+              "name": "map_id",
+              "type": "int",
+              "value": 30
+            }
+          ],
+          "rotation": 0,
+          "type": "playground",
+          "visible": true,
+          "width": 107,
+          "x": 5061.33316666667,
+          "y": 1831
+        },
+        {
+          "height": 285,
+          "id": 31,
+          "name": "中心操场",
+          "opacity": 1,
+          "properties": [
+            {
+              "name": "description",
+              "type": "string",
+              "value": "校园中心运动区域，运动会开幕式常在这里举行。"
+            },
+            {
+              "name": "map_id",
+              "type": "int",
+              "value": 31
+            }
+          ],
+          "rotation": 0,
+          "type": "playground",
+          "visible": true,
+          "width": 260.5,
+          "x": 3219.33316666667,
+          "y": 2322
+        },
+        {
+          "height": 268,
+          "id": 32,
+          "name": "西操场",
+          "opacity": 1,
+          "properties": [
+            {
+              "name": "description",
+              "type": "string",
+              "value": "西区操场，傍晚跑步和踢球的人很多。"
+            },
+            {
+              "name": "map_id",
+              "type": "int",
+              "value": 32
+            }
+          ],
+          "rotation": 0,
+          "type": "playground",
+          "visible": true,
+          "width": 234,
+          "x": 1454.93324012259,
+          "y": 1842.44928757711
+        },
+        {
+          "height": 0,
+          "id": 33,
+          "name": "毛主席像",
+          "opacity": 1,
+          "properties": [
+            {
+              "name": "description",
+              "type": "string",
+              "value": "华科标志性雕塑，校园中轴线南端，毕业季合影圣地。"
+            },
+            {
+              "name": "map_id",
+              "type": "int",
+              "value": 33
+            }
+          ],
+          "rotation": 0,
+          "type": "landmark",
+          "visible": true,
+          "width": 0,
+          "x": 2543.25,
+          "y": 2582.75
+        },
+        {
+          "height": 94.6666666666667,
+          "id": 34,
+          "name": "精密重力测量中心",
+          "opacity": 1,
+          "properties": [
+            {
+              "name": "description",
+              "type": "string",
+              "value": "精密重力测量研究中心，华科国家级科研平台之一。"
+            },
+            {
+              "name": "map_id",
+              "type": "int",
+              "value": 34
+            }
+          ],
+          "rotation": 0,
+          "type": "landmark",
+          "visible": true,
+          "width": 314,
+          "x": 2840.99983333333,
+          "y": 996.000166666663
+        },
+        {
+          "height": 24.5,
+          "id": 35,
+          "name": "建校纪念碑",
+          "opacity": 1,
+          "properties": [
+            {
+              "name": "description",
+              "type": "string",
+              "value": "纪念华科建校与发展历程，承载森林大学的历史记忆。"
+            },
+            {
+              "name": "map_id",
+              "type": "int",
+              "value": 35
+            }
+          ],
+          "rotation": 0,
+          "type": "landmark",
+          "visible": true,
+          "width": 24,
+          "x": 1953.1665,
+          "y": 1826.4165
+        },
+        {
+          "height": 118.666666666667,
+          "id": 36,
+          "name": "梧桐语问学中心",
+          "opacity": 1,
+          "properties": [
+            {
+              "name": "description",
+              "type": "string",
+              "value": "学术交流与讲座空间，常有名师问学与跨界讨论。"
+            },
+            {
+              "name": "map_id",
+              "type": "int",
+              "value": 36
+            }
+          ],
+          "rotation": 0,
+          "type": "landmark",
+          "visible": true,
+          "width": 192,
+          "x": 2777,
+          "y": 1628.00016666667
+        },
+        {
+          "height": 102.5,
+          "id": 37,
+          "name": "东校区CBD",
+          "opacity": 1,
+          "properties": [
+            {
+              "name": "description",
+              "type": "string",
+              "value": "东校区CBD"
+            },
+            {
+              "name": "map_id",
+              "type": "int",
+              "value": 37
+            }
+          ],
+          "rotation": 0,
+          "type": "shop",
+          "visible": true,
+          "width": 78.5,
+          "x": 5135.00016666667,
+          "y": 2220.33366666667
+        },
+        {
+          "height": 20.3333333333333,
+          "id": 38,
+          "name": "韵苑超市",
+          "opacity": 1,
+          "properties": [
+            {
+              "name": "description",
+              "type": "string",
+              "value": "韵苑宿舍旁的校园超市，应急采购很方便。"
+            },
+            {
+              "name": "map_id",
+              "type": "int",
+              "value": 38
+            }
+          ],
+          "rotation": 0,
+          "type": "shop",
+          "visible": true,
+          "width": 38,
+          "x": 5210.25016666667,
+          "y": 1697.417
+        },
+        {
+          "height": 27,
+          "id": 39,
+          "name": "紫菘超市",
+          "opacity": 1,
+          "properties": [
+            {
+              "name": "description",
+              "type": "string",
+              "value": "西区宿舍区超市，生活用品和零食齐全。"
+            },
+            {
+              "name": "map_id",
+              "type": "int",
+              "value": 39
+            }
+          ],
+          "rotation": 0,
+          "type": "shop",
+          "visible": true,
+          "width": 47,
+          "x": 1604.75016666667,
+          "y": 1599.667
+        },
+        {
+          "height": 152.5,
+          "id": 40,
+          "name": "东一食堂",
+          "opacity": 1,
+          "properties": [
+            {
+              "name": "description",
+              "type": "string",
+              "value": "东校区食堂"
+            },
+            {
+              "name": "map_id",
+              "type": "int",
+              "value": 40
+            }
+          ],
+          "rotation": 0,
+          "type": "canteen",
+          "visible": true,
+          "width": 131.5,
+          "x": 3349.66666666667,
+          "y": 2145.66665
+        },
+        {
+          "height": 45.5,
+          "id": 41,
+          "name": "喻园食堂",
+          "opacity": 1,
+          "properties": [
+            {
+              "name": "description",
+              "type": "string",
+              "value": "位于喻园区域，环境整洁，是西区师生的常去之地。"
+            },
+            {
+              "name": "map_id",
+              "type": "int",
+              "value": 41
+            }
+          ],
+          "rotation": 0,
+          "type": "canteen",
+          "visible": true,
+          "width": 82,
+          "x": 2696.41666666667,
+          "y": 1349.6665
+        },
+        {
+          "height": 67,
+          "id": 42,
+          "name": "沁苑超市",
+          "opacity": 1,
+          "properties": [
+            {
+              "name": "description",
+              "type": "string",
+              "value": "沁苑宿舍附近的小超市，课后补给便捷。"
+            },
+            {
+              "name": "map_id",
+              "type": "int",
+              "value": 42
+            }
+          ],
+          "rotation": 0,
+          "type": "shop",
+          "visible": true,
+          "width": 85.5,
+          "x": 3491.66666666667,
+          "y": 2244.1665
+        },
+        {
+          "height": 0,
+          "id": 43,
+          "name": "南大门巴士站",
+          "opacity": 1,
+          "properties": [
+            {
+              "name": "description",
+              "type": "string",
+              "value": "南大门旁的巴士站，进出校门和换乘的必经点。"
+            },
+            {
+              "name": "map_id",
+              "type": "int",
+              "value": 43
+            }
+          ],
+          "rotation": 0,
+          "type": "bus_stop",
+          "visible": true,
+          "width": 0,
+          "x": 2363.50001666667,
+          "y": 2541.16665
+        },
+        {
+          "height": 0,
+          "id": 44,
+          "name": "西十二巴士站",
+          "opacity": 1,
+          "properties": [
+            {
+              "name": "description",
+              "type": "string",
+              "value": "西十二教学楼附近的巴士站，答辩日格外忙碌。"
+            },
+            {
+              "name": "map_id",
+              "type": "int",
+              "value": 44
+            }
+          ],
+          "rotation": 0,
+          "type": "bus_stop",
+          "visible": true,
+          "width": 0,
+          "x": 1803.06251666667,
+          "y": 2573.58710454545
+        },
+        {
+          "height": 12.6666666666667,
+          "id": 45,
+          "name": "东九巴士站",
+          "opacity": 1,
+          "properties": [
+            {
+              "name": "description",
+              "type": "string",
+              "value": "东九教学楼门口的巴士站，早八后瞬间空旷。"
+            },
+            {
+              "name": "map_id",
+              "type": "int",
+              "value": 45
+            }
+          ],
+          "rotation": 0,
+          "type": "bus_stop",
+          "visible": true,
+          "width": 17.6666666666661,
+          "x": 4525.66666666667,
+          "y": 1629
+        },
+        {
+          "height": 14.75,
+          "id": 46,
+          "name": "集贸巴士站",
+          "opacity": 1,
+          "properties": [
+            {
+              "name": "description",
+              "type": "string",
+              "value": "集贸市场旁的巴士站点，采购完顺路回宿舍。"
+            },
+            {
+              "name": "map_id",
+              "type": "int",
+              "value": 46
+            }
+          ],
+          "rotation": 0,
+          "type": "bus_stop",
+          "visible": true,
+          "width": 16.5,
+          "x": 2776.70645606061,
+          "y": 1402.83331666667
+        },
+        {
+          "height": 15,
+          "id": 47,
+          "name": "菘邻里",
+          "opacity": 1,
+          "properties": [
+            {
+              "name": "description",
+              "type": "string",
+              "value": "紫菘宿舍区的社区空间，邻里氛围浓厚。"
+            },
+            {
+              "name": "map_id",
+              "type": "int",
+              "value": 47
+            }
+          ],
+          "rotation": 0,
+          "type": "landmark",
+          "visible": true,
+          "width": 34.6666666666667,
+          "x": 1607.58333333333,
+          "y": 1571.91666666667
+        },
+        {
+          "height": 41.3333333333334,
+          "id": 48,
+          "name": "引力实验室",
+          "opacity": 1,
+          "properties": [
+            {
+              "name": "description",
+              "type": "string",
+              "value": "引力实验室"
+            },
+            {
+              "name": "map_id",
+              "type": "int",
+              "value": 48
+            }
+          ],
+          "rotation": 0,
+          "type": "landmark",
+          "visible": true,
+          "width": 121.333333333333,
+          "x": 2637.33333333334,
+          "y": 876.500166666667
+        }
+      ],
+      "opacity": 1,
+      "type": "objectgroup",
+      "visible": true,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "id": 1,
+      "image": "../HUST-map.png",
+      "imageheight": 4000,
+      "imagewidth": 8000,
+      "name": "底图",
+      "opacity": 1,
+      "type": "imagelayer",
+      "visible": true,
+      "x": 0,
+      "y": 0
+    }
+  ],
+  "nextlayerid": 2,
+  "nextobjectid": 121,
+  "orientation": "orthogonal",
+  "renderorder": "right-down",
+  "tiledversion": "1.12.1",
+  "tileheight": 1,
+  "tilesets": [],
+  "tilewidth": 1,
+  "type": "map",
+  "version": "1.10",
+  "width": 8000
+}

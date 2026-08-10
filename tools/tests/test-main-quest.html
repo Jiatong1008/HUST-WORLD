@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HUST WORLD - 主线任务调试工具</title>
+  <style>
+    :root {
+      --gold: #FFD700;
+      --bg: #0a0c18;
+      --panel: #12142a;
+      --border: rgba(255, 215, 0, 0.2);
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --info: #3b82f6;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; padding: 20px;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Microsoft YaHei', sans-serif;
+      line-height: 1.6;
+    }
+    h1 { color: var(--gold); margin-bottom: 6px; }
+    .subtitle { color: var(--muted); font-size: 14px; margin-bottom: 24px; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+      gap: 20px;
+    }
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    }
+    .panel h2 {
+      margin: 0 0 16px 0;
+      font-size: 18px;
+      color: var(--gold);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      padding: 10px 16px;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 10px;
+      background: rgba(255,255,255,0.05);
+      color: var(--text);
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin: 4px 4px 4px 0;
+    }
+    .btn:hover { background: rgba(255,215,0,0.1); border-color: var(--gold); transform: translateY(-1px); }
+    .btn-success { border-color: rgba(34,197,94,0.4); color: var(--success); }
+    .btn-danger { border-color: rgba(239,68,68,0.4); color: var(--danger); }
+    .btn-warning { border-color: rgba(245,158,11,0.4); color: var(--warning); }
+    .btn-info { border-color: rgba(59,130,246,0.4); color: var(--info); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .field {
+      display: flex; align-items: center; gap: 10px; margin: 10px 0;
+      flex-wrap: wrap;
+    }
+    .field label { color: var(--muted); font-size: 13px; min-width: 70px; }
+    input, select {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      color: var(--text);
+      padding: 8px 12px;
+      font-size: 14px;
+      min-width: 180px;
+    }
+    input:focus, select:focus { outline: none; border-color: var(--gold); }
+    .log {
+      background: rgba(0,0,0,0.2);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 12px;
+      padding: 12px;
+      max-height: 420px;
+      overflow: auto;
+      font-size: 13px;
+      white-space: pre-wrap;
+    }
+    .tag {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-right: 6px;
+    }
+    .tag-AVAILABLE { background: rgba(34,197,94,0.15); color: var(--success); }
+    .tag-ACTIVE { background: rgba(233,30,99,0.15); color: #f472b6; }
+    .tag-COMPLETED { background: rgba(255,215,0,0.15); color: var(--gold); }
+    .tag-LOCKED { background: rgba(158,158,158,0.15); color: var(--muted); }
+    .tag-PREREQ_MET { background: rgba(255,152,0,0.15); color: var(--warning); }
+    .tag-LOCATION_REACHED { background: rgba(33,150,243,0.15); color: var(--info); }
+    .quest-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin: 8px 0;
+    }
+    .quest-card h3 { margin: 0 0 6px 0; font-size: 15px; }
+    .quest-card small { color: var(--muted); font-size: 12px; }
+    .progress-bar { height: 6px; background: rgba(255,255,255,0.08); border-radius: 3px; overflow: hidden; margin: 8px 0; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, var(--gold), #FFA500); border-radius: 3px; }
+    .status-line { color: var(--muted); font-size: 12px; margin-top: 6px; }
+    .mono { font-family: monospace; }
+    .snapshot {
+      background: rgba(0,0,0,0.2);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 10px;
+      padding: 12px;
+      font-size: 12px;
+      max-height: 200px;
+      overflow: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+    .run-step { padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .run-step:last-child { border-bottom: none; }
+    .step-ok { color: var(--success); }
+    .step-fail { color: var(--danger); }
+    .toast {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 12px 24px;
+      border-radius: 10px;
+      background: rgba(20, 22, 40, 0.98);
+      border-left: 3px solid var(--gold);
+      color: #fff;
+      z-index: 10000;
+      font-size: 14px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      opacity: 0;
+      transition: opacity 0.3s, top 0.3s;
+      pointer-events: none;
+    }
+    .toast.show { opacity: 1; top: 30px; }
+  </style>
+</head>
+<body>
+  <h1>🎓 HUST WORLD 主线任务调试面板</h1>
+  <div class="subtitle">在浏览器中调试大学四年主线闭环： freshman_1 → freshman_2 → sophomore_1 → sophomore_2 → junior_1 → junior_2 → senior_1 → senior_2</div>
+
+  <div id="toast" class="toast"></div>
+
+  <div class="grid">
+    <div class="panel">
+      <h2>🛠️ 调试操作</h2>
+      <div class="field">
+        <label>任务ID</label>
+        <select id="questSelect"></select>
+      </div>
+      <div>
+        <button class="btn btn-info" onclick="debugLoadQuestProgress()">加载进度</button>
+        <button class="btn btn-success" onclick="debugCompleteQuest()">完成当前任务</button>
+        <button class="btn btn-danger" onclick="debugResetMainQuest()">重置主线</button>
+      </div>
+      <div>
+        <button class="btn btn-info" onclick="debugSaveQuestProgress()">保存进度</button>
+        <button class="btn btn-info" onclick="debugTeleportToQuest()">瞬移到任务地点</button>
+        <button class="btn" onclick="debugJumpToNextWeek()">时间 +1 周</button>
+      </div>
+      <div style="margin-top: 10px;">
+        <button class="btn btn-warning" onclick="debugRunFreshmanSemester()">🚀 自动打穿大一上学期</button>
+        <button class="btn btn-success" onclick="debugRunAllSemesters()">🎓 自动打穿大学四年</button>
+      </div>
+      <div class="status-line">全局调试函数已挂载到 window：debugMainQuest / debugCompleteQuest / debugResetMainQuest / debugSaveQuestProgress / debugLoadQuestProgress / debugTeleportToQuest / debugJumpToNextWeek / debugRunFreshmanSemester / debugRunAllSemesters</div>
+    </div>
+
+    <div class="panel">
+      <h2>📊 当前状态</h2>
+      <div id="statusPanel">未初始化</div>
+    </div>
+
+    <div class="panel">
+      <h2>🎯 当前可触发任务</h2>
+      <div id="availableQuestsPanel" class="log" style="max-height: 240px;">暂无</div>
+    </div>
+
+    <div class="panel">
+      <h2>💾 localStorage 快照</h2>
+      <div id="snapshotPanel" class="snapshot">暂无</div>
+    </div>
+
+    <div class="panel" style="grid-column: 1 / -1;">
+      <h2>📋 任务日志</h2>
+      <div id="questLog" class="log"></div>
+    </div>
+  </div>
+
+  <!-- SaveManager 是 IIFE，先作为全局脚本加载 -->
+  <script src="/js/core/SaveManager.js"></script>
+  <!-- 时间系统脚本加载验证 -->
+  <script src="/js/config/TimeEvents.js"></script>
+  <script src="/js/systems/TimeSystem.js"></script>
+  <!-- 任务管理器和配置是 ESM module -->
+  <script type="module">
+    import questTriggerManager from '/js/managers/QuestTriggerManager.js';
+    import { SEMESTER_PHASES, MAIN_QUEST_CONFIG, getAllQuests, getQuestById, resolveQuestLocation, checkTimeRequirements, QUEST_TYPE } from '/js/config/QuestTriggerConfig.js';
+    import { getDialogueForQuest } from '/js/config/DialogueConfig.js';
+
+    function showToast(message, color = '#FFD700') {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.style.borderColor = color;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2500);
+    }
+
+    // 暴露全局实例
+    window.saveManager = window.saveManager || new window.SaveManager();
+    window.questTriggerManager = questTriggerManager;
+    window.QUEST_TYPE = QUEST_TYPE;
+
+    // 初始化
+    function initDebug() {
+      const saved = window.saveManager.loadLocal();
+      if (saved && saved.progress) {
+        questTriggerManager.loadProgress(saved.progress, false);
+      }
+      questTriggerManager.init({
+        id: 'debug-character',
+        characterName: '调试角色',
+        college: '计算机科学与技术学院',
+        level: 1,
+        experience: 0,
+        money: 1000,
+        stamina: 100,
+        maxStamina: 100,
+        mood: 50,
+        social: 0,
+        knowledge: 0,
+        physical: 20
+      });
+      // 调试面板关闭考试 UI，自动按成功率判定，并开启考试自动成功便于自动打穿
+      questTriggerManager.autoExamMode = true;
+      questTriggerManager.autoWinExam = true;
+      populateQuestSelect();
+      refreshUI();
+    }
+
+    function populateQuestSelect() {
+      const select = document.getElementById('questSelect');
+      select.innerHTML = '';
+      const all = getAllQuests();
+      for (const q of all) {
+        const opt = document.createElement('option');
+        opt.value = q.id;
+        opt.textContent = q.name;
+        select.appendChild(opt);
+      }
+    }
+
+    function refreshUI() {
+      const phase = questTriggerManager.getCurrentPhase();
+      const summary = questTriggerManager.getProgressSummary();
+      const stats = questTriggerManager.characterStats;
+      const time = questTriggerManager.gameTime;
+
+      document.getElementById('statusPanel').innerHTML = `
+        <div><strong>阶段：</strong>${phase.name}</div>
+        <div><strong>任务进度：</strong>${phase.completedCount || 0}/${phase.totalCount || 0} · ${summary.completionPercent || 0}%</div>
+        <div><strong>等级：</strong>Lv.${stats.level || 1} · <strong>金币：</strong>${stats.money || 0} · <strong>体力：</strong>${stats.stamina || 0}/${stats.maxStamina || 0} · <strong>心情：</strong>${stats.mood || 0}</div>
+        <div><strong>属性：</strong>📚${stats.knowledge || 0} · 🤝${stats.social || 0} · 💪${stats.physical || 0} · ⭐${stats.experience || 0}</div>
+        <div><strong>时间：</strong>第${time.year || 1}学年 第${time.semester || 1}学期 第${time.week || 1}周 周${time.day || 1} ${String(time.hour || 0).padStart(2,'0')}:00</div>
+        <div><strong>已解锁科目：</strong>${Array.from(questTriggerManager.unlockedSubjects || []).join(', ') || '无'}</div>
+        <div><strong>已完成任务：</strong>${Array.from(questTriggerManager.completedQuests || []).join(', ') || '无'}</div>
+      `;
+
+      renderQuestLog();
+      renderAvailableQuests();
+      renderSnapshot();
+    }
+
+    function renderAvailableQuests() {
+      const container = document.getElementById('availableQuestsPanel');
+      const available = questTriggerManager.getAvailableQuests();
+      if (!available || available.length === 0) {
+        container.innerHTML = '当前无可触发任务';
+        return;
+      }
+      container.innerHTML = available.map(q => {
+        const detail = questTriggerManager.getQuestDetail(q.id);
+        return `<div class="quest-card">
+          <h3><span class="tag tag-AVAILABLE">AVAILABLE</span> ${q.name}</h3>
+          <div class="status-line">地点：${detail?.locationName || q.locationName || '未知'} · 类型：${q.type}</div>
+        </div>`;
+      }).join('');
+    }
+
+    function renderSnapshot() {
+      const panel = document.getElementById('snapshotPanel');
+      try {
+        const raw = localStorage.getItem('hust_world_save_v1');
+        if (!raw) {
+          panel.innerHTML = 'localStorage 中未找到 hust_world_save_v1';
+          return;
+        }
+        const parsed = JSON.parse(raw);
+        panel.innerHTML = JSON.stringify(parsed, null, 2);
+      } catch (e) {
+        panel.innerHTML = '读取快照失败：' + e.message;
+      }
+    }
+
+    function renderQuestLog() {
+      const container = document.getElementById('questLog');
+      const currentPhase = questTriggerManager.getCurrentPhase();
+      const quests = (currentPhase && currentPhase.quests) || [];
+      const html = quests.map(q => {
+        const detail = questTriggerManager.getQuestDetail(q.id);
+        const loc = resolveQuestLocation(q, questTriggerManager.characterCollege);
+        const timeCheck = checkTimeRequirements(q, questTriggerManager.gameTime);
+        const statusClass = `tag-${detail.status}`;
+        const rewards = q.rewards || {};
+        const rewardParts = [];
+        if (rewards.money || rewards.gold) rewardParts.push(`💰${rewards.money || rewards.gold}`);
+        if (rewards.experience) rewardParts.push(`⭐${rewards.experience}`);
+        if (rewards.stamina || rewards.physical) rewardParts.push(`⚡${rewards.stamina || rewards.physical}`);
+        if (rewards.mood) rewardParts.push(`😊${rewards.mood}`);
+        const timeText = q.timeCost?.minutes ? `⏱️ ${q.timeCost.minutes}分钟` : '';
+        const timeReqText = q.timeRequirements?.weeks ? `📅 第 ${q.timeRequirements.weeks.join('/')} 周` : '';
+        const dialogue = getDialogueForQuest(q.id, questTriggerManager.characterCollege);
+        const dialogueHint = dialogue && dialogue.length > 0 ? `💬 ${dialogue.length} 段对话` : '';
+        return `
+          <div class="quest-card">
+            <h3><span class="tag ${statusClass}">${detail.status}</span> ${q.name}</h3>
+            <div><small>${q.description}</small></div>
+            <div class="status-line">
+              <strong>地点：</strong>${detail.locationName || q.locationName} ${loc ? `(${Math.round(loc.x)}, ${Math.round(loc.y)})` : '(未解析)'}
+              · <strong>前置：</strong>${q.prerequisites.length ? q.prerequisites.join(', ') : '无'}
+              ${detail.missingPrerequisites?.length ? ' · ❌ 缺：' + detail.missingPrerequisites.join('、') : ''}
+            </div>
+            <div class="status-line">
+              ${timeText ? `<span>${timeText}</span> · ` : ''}${timeReqText ? `<span>${timeReqText}</span>` : ''}
+              ${rewardParts.length ? ' · 🎁 ' + rewardParts.join(' ') : ''}
+              ${dialogueHint ? ' · ' + dialogueHint : ''}
+            </div>
+            ${!detail.timeMet ? `<div class="status-line" style="color: var(--warning);">⚠️ 时间条件：${detail.timeReason}</div>` : ''}
+            ${detail.distanceToLocation !== null && detail.distanceToLocation > 0 ? `<div class="status-line">📍 距离目标 ${Math.round(detail.distanceToLocation)} 像素</div>` : ''}
+          </div>
+        `;
+      }).join('');
+      container.innerHTML = html || '当前阶段无任务';
+    }
+
+    // 暴露全局调试函数
+    window.debugMainQuest = function() {
+      refreshUI();
+      console.log('QuestTriggerManager:', questTriggerManager);
+      return questTriggerManager.exportProgress();
+    };
+
+    window.debugCompleteQuest = async function(questId) {
+      const select = document.getElementById('questSelect');
+      const targetId = questId || select.value;
+      if (!targetId) return { success: false, message: '未选择任务' };
+
+      const result = getQuestById(targetId);
+      if (!result) return { success: false, message: '任务不存在' };
+      const q = result.quest;
+
+      // 前置任务链补齐：递归完成缺失的前置
+      if (q.prerequisites && q.prerequisites.length > 0) {
+        for (const preId of q.prerequisites) {
+          if (!questTriggerManager.completedQuests.has(preId)) {
+            const preResult = getQuestById(preId);
+            if (preResult) {
+              const preLoc = resolveQuestLocation(preResult.quest, questTriggerManager.characterCollege);
+              if (preLoc) questTriggerManager.updatePlayerPosition(preLoc.x, preLoc.y);
+              questTriggerManager.questStatus[preId] = 'ACTIVE';
+              await questTriggerManager.completeQuest(preId);
+            }
+          }
+        }
+      }
+
+      // 瞬移到任务地点并满足时间条件
+      const loc = resolveQuestLocation(q, questTriggerManager.characterCollege);
+      if (loc) questTriggerManager.updatePlayerPosition(loc.x, loc.y);
+      if (q.timeRequirements && q.timeRequirements.weeks && q.timeRequirements.weeks.length > 0) {
+        questTriggerManager.gameTime.week = q.timeRequirements.weeks[0];
+      }
+      questTriggerManager.updateGameTime(questTriggerManager.gameTime);
+
+      questTriggerManager.questStatus[targetId] = 'ACTIVE';
+      questTriggerManager.activeQuest = targetId;
+      const complete = await questTriggerManager.completeQuest(targetId);
+      refreshUI();
+      showToast(complete.success ? `✅ ${complete.message}` : `❌ ${complete.message}`, complete.success ? '#22c55e' : '#ef4444');
+      return complete;
+    };
+
+    window.debugResetMainQuest = function() {
+      const r = questTriggerManager.reset();
+      refreshUI();
+      showToast('主线已重置', '#f59e0b');
+      return r;
+    };
+
+    window.debugSaveQuestProgress = function() {
+      if (window.saveManager) {
+        window.saveManager.save();
+      }
+      refreshUI();
+      showToast('已保存到本地存储', '#3b82f6');
+      return { success: true, message: '已保存到本地存储' };
+    };
+
+    window.debugLoadQuestProgress = function() {
+      if (window.saveManager) {
+        const saved = window.saveManager.loadLocal();
+        if (saved && saved.progress) {
+          questTriggerManager.loadProgress(saved.progress, true);
+        }
+      }
+      refreshUI();
+      showToast('已从本地存储加载', '#3b82f6');
+      return { success: true, message: '已从本地存储加载' };
+    };
+
+    window.debugTeleportToQuest = function() {
+      const select = document.getElementById('questSelect');
+      const questId = select.value;
+      const result = getQuestById(questId);
+      if (!result) return { success: false, message: '任务不存在' };
+      const loc = resolveQuestLocation(result.quest, questTriggerManager.characterCollege);
+      if (!loc) return { success: false, message: '地点未解析' };
+      questTriggerManager.updatePlayerPosition(loc.x, loc.y);
+      refreshUI();
+      showToast(`已瞬移到 ${loc.name || result.quest.locationName}`, '#3b82f6');
+      return { success: true, message: `已瞬移到 ${loc.name || result.quest.locationName}` };
+    };
+
+    window.debugJumpToNextWeek = function() {
+      const time = questTriggerManager.gameTime;
+      time.week = (time.week || 1) + 1;
+      if (time.week > 20) { time.week = 1; time.semester++; }
+      if (time.semester > 2) { time.semester = 1; time.year++; }
+      questTriggerManager.updateGameTime(time);
+      refreshUI();
+      showToast(`时间推进到第 ${time.week} 周`, '#f59e0b');
+      return { success: true, message: `时间推进到第 ${time.week} 周` };
+    };
+
+      window.debugRunFreshmanSemester = async function() {
+        const runLog = document.getElementById('questLog');
+        const steps = [];
+        function logStep(text, ok) {
+          steps.push({ text, ok });
+          const html = steps.map(s => `<div class="run-step ${s.ok ? 'step-ok' : 'step-fail'}">${s.ok ? '✅' : '❌'} ${s.text}</div>`).join('');
+          runLog.innerHTML = html;
+        }
+        function appendStatus() {
+          const phase = questTriggerManager.getCurrentPhase();
+          const completed = Array.from(questTriggerManager.completedQuests).join(', ');
+          logStep(`阶段：${phase.name} | 已完成：${completed}`, true);
+        }
+
+        questTriggerManager.reset();
+        const freshman1 = MAIN_QUEST_CONFIG['freshman_1'];
+        const questOrder = (freshman1 && freshman1.quests) ? freshman1.quests.filter(q => q.type !== QUEST_TYPE.SELF_STUDY).map(q => q.id) : [];
+        const selfStudyQuest = (freshman1 && freshman1.quests) ? freshman1.quests.find(q => q.type === QUEST_TYPE.SELF_STUDY) : null;
+
+        logStep('开始自动打穿大一上学期', true);
+        for (const questId of questOrder) {
+          const result = await window.debugCompleteQuest(questId);
+          logStep(`${questId}: ${result.success ? '完成' : '失败 - ' + result.message}`, result.success);
+          if (!result.success) {
+            appendStatus();
+            showToast('自动打穿失败，请查看日志', '#ef4444');
+            return { success: false, message: result.message, steps };
+          }
+          await new Promise(r => setTimeout(r, 50));
+        }
+        if (selfStudyQuest) {
+          const result = await window.debugCompleteQuest(selfStudyQuest.id);
+          logStep(`${selfStudyQuest.id}: ${result.success ? '完成' : '失败 - ' + result.message}`, result.success);
+        }
+        appendStatus();
+        showToast('大一上学期自动打穿完成', '#22c55e');
+        return { success: true, steps };
+      };
+
+    window.debugRunAllSemesters = async function() {
+      const runLog = document.getElementById('questLog');
+      const steps = [];
+      function logStep(text, ok) {
+        steps.push({ text, ok });
+        const html = steps.map(s => `<div class="run-step ${s.ok ? 'step-ok' : 'step-fail'}">${s.ok ? '✅' : '❌'} ${s.text}</div>`).join('');
+        runLog.innerHTML = html;
+      }
+      function appendStatus() {
+        const phase = questTriggerManager.getCurrentPhase();
+        const completed = Array.from(questTriggerManager.completedQuests).join(', ');
+        logStep(`阶段：${phase.name} | 已完成：${completed}`, true);
+      }
+
+      questTriggerManager.reset();
+      logStep('开始自动打穿大学四年', true);
+
+      const summaryIds = SEMESTER_PHASES.map(p => `${p.id}_summary`);
+      for (const summaryId of summaryIds) {
+        const phase = questTriggerManager.getCurrentPhase();
+        logStep(`当前阶段：${phase.name}，准备完成 ${summaryId}`, true);
+
+        const result = await window.debugCompleteQuest(summaryId);
+        logStep(`${summaryId}: ${result.success ? '完成' : '失败 - ' + result.message}`, result.success);
+        if (!result.success) {
+          appendStatus();
+          showToast('自动打穿失败，请查看日志', '#ef4444');
+          return { success: false, message: result.message, steps };
+        }
+
+        const afterPhase = questTriggerManager.getCurrentPhase();
+        logStep(`阶段已推进到：${afterPhase.name}`, true);
+        appendStatus();
+        await new Promise(r => setTimeout(r, 50));
+      }
+
+      showToast('大学四年自动打穿完成！', '#22c55e');
+      return { success: true, steps };
+    };
+
+    // 自动初始化
+    initDebug();
+  </script>
+</body>
+</html>

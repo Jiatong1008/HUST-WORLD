@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+map/node_modules/
+
+# Runtime data
+map/.mysql-data/
+logs/
+*.log
+
+# MySQL dev data directories
+mysql-data/
+.hust-world-mysql/
+*.err
+
+# Environment files
+.env
+.env.local
+.env.docker
+.env.*.local
+map/.env
+
+# Build output
+dist/
+build/
+
+# Editor and OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
