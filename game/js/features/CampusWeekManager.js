@@ -8,7 +8,7 @@
   const CHAPTERS = [
     {
       id: 'day0', day: 'DAY 0', title: '从校门开始', place: '主校区校门',
-      image: `${ASSET_BASE}/gate.webp`, icon: '🧭',
+      image: `${ASSET_BASE}/gate.webp`,
       copy: '报到日的人流像一条还没画完的路线。你可以先把“我该去哪儿”变成一次具体的相遇。',
       prompt: '志愿者问：要不要一起核对报到清单？',
       options: [
@@ -18,7 +18,7 @@
     },
     {
       id: 'day2', day: 'DAY 2', title: '在图书馆找答案', place: '图书馆',
-      image: `${ASSET_BASE}/library.jpg`, lineArt: `${ASSET_BASE}/line-art/library.png`, icon: '📚',
+      image: `${ASSET_BASE}/library.jpg`, lineArt: `${ASSET_BASE}/line-art/library.png`,
       copy: '课程群里冒出一个陌生概念。图书馆的安静不是答案，而是让你决定从哪里开始找。',
       prompt: '你为今晚的学习留下一条什么样的线索？',
       options: [
@@ -28,7 +28,7 @@
     },
     {
       id: 'day5', day: 'DAY 5', title: '夜色里的醉晚亭', place: '醉晚亭',
-      image: `${ASSET_BASE}/zuiwan-night.jpg`, lineArt: `${ASSET_BASE}/line-art/zuiwan.png`, icon: '🌙',
+      image: `${ASSET_BASE}/zuiwan-night.jpg`, lineArt: `${ASSET_BASE}/line-art/zuiwan.png`,
       copy: '一周快结束时，雨停了。沿着灯光走到亭边，白天匆忙经过的地方忽然有了另一种尺度。',
       prompt: '你打算怎样收下这一晚？',
       options: [
@@ -38,7 +38,7 @@
     },
     {
       id: 'day7', day: 'DAY 7', title: '把地图交给下一个人', place: '校史陈列馆前',
-      image: `${ASSET_BASE}/history-museum.jpg`, lineArt: `${ASSET_BASE}/line-art/history-museum.png`, icon: '🪪',
+      image: `${ASSET_BASE}/history-museum.jpg`, lineArt: `${ASSET_BASE}/line-art/history-museum.png`,
       copy: '一位新同学站在路口，问起报到、图书馆和晚上能去哪里。你发现自己已经能给出一条有温度的路线。',
       prompt: '你把这一周的经验递给对方。',
       options: [
@@ -130,7 +130,7 @@
     const ending = state.ending || (completedCount === CHAPTERS.length ? getEnding(state) : null);
     const chapter = active || CHAPTERS[CHAPTERS.length - 1];
     const memoryHtml = state.memories.length
-      ? state.memories.map(memory => `<li><span>${escape(memory.icon || '✦')}</span><strong>${escape(memory.label)}</strong><small>${escape(memory.place)}</small></li>`).join('')
+      ? state.memories.map(memory => `<li><strong>${escape(memory.label)}</strong><small>${escape(memory.place)}</small></li>`).join('')
       : '<li class="campus-week-empty">完成一个片段后，这里会留下你的校园记忆。</li>';
 
     root.innerHTML = `
@@ -150,7 +150,7 @@
               ${CHAPTERS.map(item => {
                 const done = state.completed.includes(item.id);
                 const current = active && active.id === item.id;
-                return `<button type="button" class="campus-week-route-item ${done ? 'is-done' : ''} ${current ? 'is-current' : ''}" data-chapter="${item.id}" ${(!done && !current) ? 'disabled' : ''}><span>${item.icon}</span><i>${item.day}</i><strong>${item.title}</strong></button>`;
+                return `<button type="button" class="campus-week-route-item ${done ? 'is-done' : ''} ${current ? 'is-current' : ''}" data-chapter="${item.id}" ${(!done && !current) ? 'disabled' : ''}><i>${item.day}</i><strong>${item.title}</strong></button>`;
               }).join('')}
             </aside>
             <main class="campus-week-scene">
@@ -211,7 +211,7 @@
     next.choices[chapterId] = choiceId;
     next.completed.push(chapterId);
     for (const [stat, amount] of Object.entries(option.effects)) next.stats[stat] = (Number(next.stats[stat]) || 0) + amount;
-    next.memories.push({ chapterId, label: option.memory, place: chapter.place, icon: chapter.icon, image: chapter.image });
+    next.memories.push({ chapterId, label: option.memory, place: chapter.place, image: chapter.image });
     if (next.completed.length === CHAPTERS.length) next.ending = getEnding(next);
     persist(next);
     if (global.UIFeedback && global.UIFeedback.showToast) global.UIFeedback.showToast(`已记录：${option.memory}`, 'success', 2200);
