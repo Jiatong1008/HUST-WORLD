@@ -3,7 +3,7 @@
 .campus-week-launcher span { font-size: 11px; color: #f8d777; }
 .campus-week-overlay { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; padding: 22px; background: rgba(4, 12, 17, .78); backdrop-filter: blur(10px); }
 .campus-week-open .campus-week-overlay { display: flex; }
-.campus-week-dialog { position: relative; width: min(1180px, 100%); max-height: min(790px, calc(100vh - 44px)); overflow: auto; color: #eaf0e9; background: #102126 url('/game/assets/hust-week/ui/mountain-water-pattern.png') bottom right / 440px auto no-repeat; border: 1px solid rgba(237, 208, 139, .32); border-radius: 20px; box-shadow: 0 30px 100px rgba(0,0,0,.6); }
+.campus-week-dialog { position: relative; width: min(1180px, 100%); max-height: min(790px, calc(100vh - 44px)); overflow: auto; color: #eaf0e9; background: linear-gradient(145deg, #142b31, #0d1e24); border: 1px solid rgba(237, 208, 139, .32); border-radius: 20px; box-shadow: 0 30px 100px rgba(0,0,0,.6); }
 .campus-week-header { padding: 28px 34px 18px; background: linear-gradient(135deg, rgba(28,55,52,.96), rgba(17,34,39,.95)); border-bottom: 1px solid rgba(255,255,255,.1); }
 .campus-week-kicker,.campus-week-day { margin: 0 0 7px; color: #e5c774; font-size: 11px; letter-spacing: 1.8px; }
 .campus-week-header h2 { margin: 0; font-family: Georgia, "Songti SC", serif; color: #fff5d4; font-size: clamp(28px, 4vw, 43px); letter-spacing: 4px; }

@@ -11,7 +11,7 @@ const nodeCommand = process.execPath;
 const TIERS = {
   quick: {
     description: 'Fast local confidence check for everyday edits.',
-    scripts: ['quality:gate', 'test:campus-week', 'test:dashboard', 'test:ui-layout', 'test:responsive']
+    scripts: ['quality:gate', 'test:campus-week', 'test:newcomer-guide', 'test:dashboard', 'test:ui-layout', 'test:responsive']
   },
   standard: {
     description: 'Recommended regression before committing feature work.',

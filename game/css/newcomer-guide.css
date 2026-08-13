@@ -1,0 +1,114 @@
+#newcomer-guide-root {
+  position: relative;
+  z-index: 61000;
+  font-family: "Microsoft YaHei", "Noto Sans SC", sans-serif;
+}
+
+#newcomer-guide-root:not(.is-visible) { display: none; }
+
+#newcomer-guide-root.is-visible {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(5, 14, 22, 0.7);
+  backdrop-filter: blur(8px);
+}
+
+.newcomer-guide-card {
+  width: min(520px, 100%);
+  padding: 30px;
+  color: #eaf0e9;
+  background: linear-gradient(145deg, #17333a, #0e2027);
+  border: 1px solid rgba(229, 199, 116, 0.36);
+  border-radius: 16px;
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.5);
+}
+
+.newcomer-guide-kicker {
+  margin: 0 0 8px;
+  color: #e5c774;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+}
+
+.newcomer-guide-card h2 {
+  margin: 0;
+  color: #fff4d1;
+  font-family: Georgia, "Songti SC", serif;
+  font-size: clamp(26px, 5vw, 34px);
+}
+
+.newcomer-guide-intro {
+  margin: 12px 0 20px;
+  color: #b9cbc2;
+  line-height: 1.75;
+}
+
+.newcomer-guide-steps {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: guide-step;
+}
+
+.newcomer-guide-steps li {
+  position: relative;
+  min-height: 66px;
+  padding: 12px 12px 12px 48px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.045);
+  counter-increment: guide-step;
+}
+
+.newcomer-guide-steps li::before {
+  content: counter(guide-step);
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  color: #f6dd97;
+  border: 1px solid rgba(229, 199, 116, 0.5);
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.newcomer-guide-steps strong,
+.newcomer-guide-steps span { display: block; }
+.newcomer-guide-steps strong { margin-bottom: 3px; color: #f6f8f6; font-size: 14px; }
+.newcomer-guide-steps span { color: #aebfb7; font-size: 12px; line-height: 1.55; }
+
+.newcomer-guide-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.newcomer-guide-actions button {
+  min-height: 40px;
+  padding: 9px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  font: inherit;
+  font-size: 13px;
+}
+
+.newcomer-guide-secondary { color: #c3d1cb; border: 1px solid rgba(195, 209, 203, 0.22); background: transparent; }
+.newcomer-guide-primary { color: #162328; border: 1px solid #efd485; background: #efd485; font-weight: 700; }
+
+@media (max-width: 560px) {
+  #newcomer-guide-root.is-visible { padding: 12px; }
+  .newcomer-guide-card { padding: 22px; border-radius: 14px; }
+  .newcomer-guide-actions { flex-direction: column-reverse; }
+  .newcomer-guide-actions button { width: 100%; }
+}
