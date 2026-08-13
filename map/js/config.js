@@ -30,6 +30,7 @@ export const BUS_ROUTES = [
 ];
 
 export const CHARACTER_DEFAULTS = {
+  // 南大门：所有新角色与无效旧存档的统一出生点
   startX: 2526,
   startY: 2773,
   baseSpeed: 0.65,

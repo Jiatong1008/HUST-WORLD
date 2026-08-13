@@ -1,0 +1,141 @@
+/* 校园地图 UI：玻璃卡片、清晰层级和更轻盈的操作反馈。 */
+:root {
+  --map-polish-ink: #0b1628;
+  --map-polish-surface: rgba(10, 23, 43, 0.86);
+  --map-polish-line: rgba(191, 225, 255, 0.16);
+  --map-polish-accent: #f7ca4c;
+  --map-polish-cyan: #75d7e7;
+}
+
+#hud,
+#sidePanel,
+#panelToggle,
+#miniToolbar .mini-btn,
+.mini-toolbar button,
+#busPanel {
+  border-color: var(--map-polish-line);
+  box-shadow: 0 16px 44px rgba(3, 10, 23, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+#hud {
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 0 0, rgba(117, 215, 231, 0.16), transparent 42%),
+    linear-gradient(145deg, rgba(14, 35, 63, 0.94), var(--map-polish-surface));
+  backdrop-filter: blur(16px) saturate(125%);
+}
+
+#hud::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 3px;
+  background: linear-gradient(180deg, var(--map-polish-cyan), var(--map-polish-accent));
+}
+
+.hud-title {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: #fff2bf;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.hud-title::before {
+  content: '●';
+  color: var(--map-polish-cyan);
+  font-size: 9px;
+  text-shadow: 0 0 12px var(--map-polish-cyan);
+}
+
+.hud-row {
+  min-height: 30px;
+  border-bottom-color: rgba(191, 225, 255, 0.1);
+}
+
+.hud-label {
+  color: #a9c1d8;
+}
+
+.hud-val {
+  color: #f8fbff;
+  font-variant-numeric: tabular-nums;
+}
+
+.hud-actions .hw-button,
+#miniToolbar .mini-btn,
+.mini-toolbar button,
+#panelToggle {
+  transition: transform 160ms ease, border-color 160ms ease, background 160ms ease, box-shadow 160ms ease;
+}
+
+.hud-actions .hw-button:hover,
+#miniToolbar .mini-btn:hover,
+.mini-toolbar button:hover,
+#panelToggle:hover {
+  transform: translateY(-2px);
+  border-color: rgba(247, 202, 76, 0.72);
+  background: rgba(38, 69, 103, 0.95);
+  box-shadow: 0 14px 28px rgba(3, 10, 23, 0.42), 0 0 0 3px rgba(247, 202, 76, 0.08);
+}
+
+#panelToggle {
+  background: linear-gradient(145deg, rgba(20, 49, 82, 0.96), rgba(9, 24, 44, 0.96));
+  backdrop-filter: blur(12px);
+}
+
+#sidePanel {
+  background:
+    radial-gradient(circle at 100% 0, rgba(117, 215, 231, 0.11), transparent 34%),
+    linear-gradient(160deg, rgba(13, 31, 55, 0.98), rgba(6, 17, 32, 0.98));
+  backdrop-filter: blur(18px) saturate(125%);
+}
+
+#sidePanel h3 {
+  color: #fff1b8;
+  letter-spacing: 0.06em;
+}
+
+.type-tag,
+.loc-item,
+#selInfo {
+  border-color: rgba(191, 225, 255, 0.12);
+  background: rgba(33, 58, 87, 0.44);
+}
+
+.loc-item:hover,
+.loc-item.sel,
+.type-tag.active,
+.type-tag:hover {
+  background: linear-gradient(100deg, rgba(247, 202, 76, 0.2), rgba(117, 215, 231, 0.12));
+  border-color: rgba(247, 202, 76, 0.56);
+}
+
+#busOverlay {
+  background: rgba(3, 10, 23, 0.72);
+  backdrop-filter: blur(8px);
+}
+
+@media (max-width: 640px) {
+  #hud {
+    border-radius: 12px;
+  }
+
+  #sidePanel {
+    width: min(360px, 92vw);
+  }
+
+  .hud-actions .hw-button {
+    min-height: 34px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hud-actions .hw-button,
+  #miniToolbar .mini-btn,
+  .mini-toolbar button,
+  #panelToggle {
+    transition: none;
+  }
+}

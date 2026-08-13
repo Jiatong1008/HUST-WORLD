@@ -9,6 +9,31 @@
   ];
   const SAVE_VERSION = '1';
   const DEFAULT_INTERVAL_MS = 60 * 1000;
+  // 地图的唯一默认出生点：华中科技大学南大门。
+  // 旧版本曾把 (0, 0) 写进本地存档；该坐标位于地图边缘，
+  // 会导致镜头看起来停在整个画布左上角，因此统一迁移到这里。
+  const SOUTH_GATE_SPAWN = Object.freeze({ mapId: 24, x: 2526, y: 2773 });
+  const MAP_BOUNDS = Object.freeze({ width: 8000, height: 4000 });
+
+  function normalizeMapPosition(position) {
+    const raw = position || {};
+    const x = Number(raw.x);
+    const y = Number(raw.y);
+    const mapId = Number(raw.mapId ?? raw.map_id);
+    const isOutsideMap = !Number.isFinite(x) || !Number.isFinite(y)
+      || x < 0 || y < 0 || x > MAP_BOUNDS.width || y > MAP_BOUNDS.height;
+    const isLegacyOrigin = x === 0 && y === 0;
+
+    if (isOutsideMap || isLegacyOrigin) {
+      return { ...SOUTH_GATE_SPAWN };
+    }
+
+    return {
+      mapId: Number.isFinite(mapId) && mapId > 0 ? Math.round(mapId) : SOUTH_GATE_SPAWN.mapId,
+      x: Math.round(x),
+      y: Math.round(y)
+    };
+  }
 
   class SaveManager {
     constructor() {
@@ -272,7 +297,7 @@
           week: 1
         },
         gameTime: { day: 1, hour: 8, minute: 0 },
-        position: { mapId: 1, x: 0, y: 0 },
+        position: { ...SOUTH_GATE_SPAWN },
         progress: {},
         modules: {},
         settings: {}
@@ -280,22 +305,22 @@
     }
 
     capturePosition() {
-      let mapId = 1;
-      let x = 0;
-      let y = 0;
+      let mapId = SOUTH_GATE_SPAWN.mapId;
+      let x = SOUTH_GATE_SPAWN.x;
+      let y = SOUTH_GATE_SPAWN.y;
 
       if (typeof window !== 'undefined') {
         if (window._character) {
-          x = Number(window._character.x) || 0;
-          y = Number(window._character.y) || 0;
+          x = Number(window._character.x);
+          y = Number(window._character.y);
         }
         if (window.currentMapId !== undefined) {
-          mapId = Number(window.currentMapId) || 1;
+          mapId = Number(window.currentMapId) || SOUTH_GATE_SPAWN.mapId;
         } else if (window.gameMap && window.gameMap.mapId !== undefined) {
-          mapId = Number(window.gameMap.mapId) || 1;
+          mapId = Number(window.gameMap.mapId) || SOUTH_GATE_SPAWN.mapId;
         }
       }
-      return { mapId, x, y };
+      return normalizeMapPosition({ mapId, x, y });
     }
 
     captureGameTime() {
@@ -492,14 +517,15 @@
       };
 
       normalized.gameTime = snapshot.gameTime || (backend.game_progress?.gameTime) || { day: 1, hour: 8, minute: 0 };
-      normalized.position = snapshot.position || (backend.game_progress?.position) || {
+      const sourcePosition = snapshot.position || (backend.game_progress?.position) || {
         mapId: backend.current_map_id || 1,
         x: backend.position_x || 0,
         y: backend.position_y || 0
       };
-      if (normalized.position.mapId === undefined) {
-        normalized.position.mapId = backend.current_map_id || 1;
-      }
+      normalized.position = normalizeMapPosition({
+        ...sourcePosition,
+        mapId: sourcePosition.mapId ?? sourcePosition.map_id ?? backend.current_map_id
+      });
 
       normalized.progress = snapshot.progress || (backend.game_progress?.progress) || {};
       if (normalized.progress.stats) {
@@ -562,10 +588,16 @@
             mood: normalized.character.mood,
             grade: normalized.character.grade,
             semester: normalized.character.semester,
-            week: normalized.character.week,
-            x: normalized.position.x,
-            y: normalized.position.y
+            week: normalized.character.week
           });
+          // Character.teleport 会处理碰撞检测、移动状态和镜头同步。
+          // 不能直接赋值 x/y，否则加载存档后镜头会继续停留在旧位置。
+          if (typeof char.teleport === 'function') {
+            char.teleport(normalized.position.x, normalized.position.y);
+          } else {
+            char.x = normalized.position.x;
+            char.y = normalized.position.y;
+          }
         }
         if (window.currentMapId !== undefined) {
           window.currentMapId = normalized.position.mapId;
@@ -675,7 +707,11 @@
           week: character.week || 1
         },
         gameTime: time,
-        position: { mapId: character.currentMapId || 1, x: character.x || 0, y: character.y || 0 },
+        position: normalizeMapPosition({
+          mapId: character.currentMapId,
+          x: character.x,
+          y: character.y
+        }),
         progress: {},
         modules: { clubs, exploration },
         settings: {}

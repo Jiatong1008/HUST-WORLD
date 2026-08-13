@@ -84,6 +84,32 @@ async function runTests() {
     await page.waitForTimeout(800);
   }
 
+  const spawnCheck = await page.evaluate(() => {
+    const character = window._character;
+    const initial = window.saveManager?.buildInitialSnapshot?.().position;
+    const repairedLegacy = window.saveManager?.normalizeSnapshot?.({
+      position: { mapId: 1, x: 0, y: 0 }
+    }).position;
+    const preservedPosition = window.saveManager?.normalizeSnapshot?.({
+      position: { mapId: 24, x: 1300, y: 1900 }
+    }).position;
+    return {
+      character: character ? { x: character.x, y: character.y } : null,
+      initial,
+      repairedLegacy,
+      preservedPosition
+    };
+  });
+  const isSouthGate = (position) => position?.mapId === 24 && position?.x === 2526 && position?.y === 2773;
+  const spawnPass = spawnCheck.character?.x === 2526
+    && spawnCheck.character?.y === 2773
+    && isSouthGate(spawnCheck.initial)
+    && isSouthGate(spawnCheck.repairedLegacy)
+    && spawnCheck.preservedPosition?.x === 1300
+    && spawnCheck.preservedPosition?.y === 1900;
+  log(`[map-ui] South Gate spawn and legacy-save repair: ${spawnPass}`);
+  if (!spawnPass) errors.push(`South Gate spawn check failed: ${JSON.stringify(spawnCheck)}`);
+
   const hud = await page.$eval('#hud', el => ({
     hasHud: true,
     nameText: el.querySelector('#hudName')?.textContent || '',
