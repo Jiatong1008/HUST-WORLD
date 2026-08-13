@@ -125,7 +125,14 @@ export class TestGameDashboard {
         title: '期中复习周',
         description: '完成图书馆自习任务'
       }),
-      addListener: () => {}
+      addListener: () => {},
+      ending: {
+        type: 'hust_graduate',
+        title: 'HUST Graduate',
+        description: 'A complete four-year campus record.',
+        dimensions: { knowledge: 88, social: 76, stamina: 70, achievements: 9, npcRelations: 68 },
+        npcRelations: { count: 0, average: 68 }
+      }
     };
   }
 
@@ -192,6 +199,14 @@ export class TestGameDashboard {
     await this.sleep(50);
     const settingsBody = document.getElementById('gd-settings-body');
     this.assert(settingsBody != null && settingsBody.querySelector('[data-action="save-game"]') != null, '设置面板显示保存按钮');
+    dashboard.closePanel();
+
+    dashboard.openPanel('ending');
+    await this.sleep(50);
+    const endingBody = document.getElementById('gd-ending-body');
+    this.assert(endingBody && endingBody.querySelector('.gd-ending-hero') != null, 'Ending renders a four-year archive hero');
+    this.assert(endingBody && endingBody.textContent.includes('HUST Graduate'), 'Ending renders its title');
+    this.assert(endingBody && endingBody.querySelectorAll('.gd-ending-stat-row').length === 5, 'Ending renders five growth dimensions');
     dashboard.closePanel();
 
     const saveBtn = document.querySelector('#gd-nav-bar [data-action="save-game"]');

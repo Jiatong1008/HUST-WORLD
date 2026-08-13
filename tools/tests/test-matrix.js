@@ -42,6 +42,7 @@ const TIERS = {
       'cleanup:smoke',
       'smoke:api',
       'test:services',
+      'test:four-year',
       'test:map',
       'test:npc',
       'test:quest',

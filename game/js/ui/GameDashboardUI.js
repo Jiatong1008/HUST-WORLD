@@ -1058,7 +1058,7 @@ const GameDashboardUI = (() => {
       if (!ending || !ending.type) {
         body.innerHTML = `
           <div class="hw-empty-state gd-empty-state">
-            <div class="hw-empty-state-icon">🎓</div>
+            <div class="gd-ending-empty-mark">—</div>
             <div>尚未毕业</div>
             <div class="hw-text-muted">完成毕业典礼后将在这里展示你的毕业结局</div>
           </div>
@@ -1095,15 +1095,16 @@ const GameDashboardUI = (() => {
       }
 
       body.innerHTML = `
-        <div class="gd-panel-intro">
-          <div><div class="hw-panel-kicker">Graduation</div><div class="gd-section-title">${ending.title || '毕业结局'}</div></div>
+        <div class="gd-ending-hero">
+          <div class="hw-panel-kicker">四年档案 · GRADUATION</div>
+          <div class="gd-ending-hero-title">${ending.title || '毕业结局'}</div>
+          <div class="gd-ending-hero-meta">已完成毕业典礼 · 校园经历归档</div>
         </div>
-        <div class="hw-card" style="margin-bottom:16px;">
-          <div style="font-size:18px;font-weight:700;color:var(--hw-gold);margin-bottom:8px;">${ending.title || '毕业结局'}</div>
-          <div style="color:var(--hw-text-muted);line-height:1.6;">${ending.description || ''}</div>
+        <div class="gd-ending-summary">
+          <div>${ending.description || ''}</div>
         </div>
-        <div class="gd-section-title">毕业维度</div>
-        <div class="hw-card" style="margin-bottom:16px;">
+        <div class="gd-section-title gd-ending-section-title">成长维度</div>
+        <div class="gd-ending-dimensions">
           ${dimBar('知识', dims.knowledge || 0, 'var(--hw-hust-blue)')}
           ${dimBar('社交', dims.social || 0, 'var(--hw-vivid-green)')}
           ${dimBar('体能', dims.stamina || 0, 'var(--hw-gold)')}

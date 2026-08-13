@@ -189,6 +189,22 @@ class TimeSystem {
         }
       }
     }
+
+    // 分钟跳转同样可能跨越学期或学年。此前这里只有实时推进路径
+    // 会做这个换算，导致调试跳周、任务耗时和长期存档可能停在第 21 周。
+    while (this.gameTime.week > this.SEMESTER_WEEKS) {
+      const completedSemester = this.gameTime.semester;
+      const completedYear = this.gameTime.year;
+      this.gameTime.week -= this.SEMESTER_WEEKS;
+      this.gameTime.semester++;
+      if (this.gameTime.semester > 2) {
+        this.gameTime.semester = 1;
+        this.gameTime.year++;
+      }
+      this.triggerEvent('semesterEnd', { semester: completedSemester, year: completedYear });
+      this.triggerEvent('semesterChange', { semester: this.gameTime.semester, year: this.gameTime.year });
+      this.checkSemesterProgress();
+    }
     
     // 更新任务管理器的游戏时间
     if (this.questManager && this.questManager.updateGameTime) {
@@ -313,6 +329,8 @@ class TimeSystem {
     }
     
     while (this.gameTime.week > this.SEMESTER_WEEKS) {
+      const completedSemester = this.gameTime.semester;
+      const completedYear = this.gameTime.year;
       this.gameTime.week -= this.SEMESTER_WEEKS;
       this.gameTime.semester++;
       
@@ -321,8 +339,10 @@ class TimeSystem {
         this.gameTime.year++;
       }
       
+      this.triggerEvent('semesterEnd', { semester: completedSemester, year: completedYear });
       // 触发学期事件
       this.triggerEvent('semesterChange', { semester: this.gameTime.semester, year: this.gameTime.year });
+      this.checkSemesterProgress();
     }
     
     // 更新任务管理器的游戏时间

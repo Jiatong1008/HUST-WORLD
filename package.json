@@ -32,6 +32,7 @@
     "test:game-dashboard": "node tools/tests/browser-test-game-dashboard.js",
     "test:campus-week": "node tools/tests/browser-test-campus-week.js",
     "test:newcomer-guide": "node tools/tests/browser-test-newcomer-guide.js",
+    "test:four-year": "node tools/tests/browser-test-four-year-lifecycle.js",
     "test:panels-ui": "node tools/tests/browser-test-panels-ui.js",
     "test:ui-layout": "node tools/tests/browser-test-ui-layout.js",
     "test:responsive": "node tools/tests/browser-test-responsive-motion.js",

@@ -100,7 +100,7 @@ class QuestTriggerManager {
     this.listeners = {};
     this.visitedLocations = new Set();
     this.initialized = false;
-    this.gameTime = { year: 2024, semester: 1, week: 1, day: 1, hour: 8 };
+    this.gameTime = { year: 1, semester: 1, week: 1, day: 1, hour: 8 };
     this.timeSystem = null;
     this.clubTasks = [];
     this.sideQuestStatus = {};
@@ -1647,16 +1647,14 @@ class QuestTriggerManager {
     const currentPhase = this._getCurrentPhaseQuests();
     const completingQuest = currentPhase.find(q => q.completesPhase && this.completedQuests.has(q.id));
     if (completingQuest) {
-      this._advanceToNextPhase();
-      return true;
+      return this._advanceToNextPhase();
     }
 
     const realQuests = currentPhase.filter(q => q.type !== QUEST_TYPE.SELF_STUDY);
     if (realQuests.length === 0) return false;
     const allCompleted = realQuests.every(q => this.completedQuests.has(q.id));
     if (allCompleted) {
-      this._advanceToNextPhase();
-      return true;
+      return this._advanceToNextPhase();
     }
     return false;
   }
@@ -1669,7 +1667,9 @@ class QuestTriggerManager {
     this.currentPhaseIndex++;
     
     this.gameTime.semester = SEMESTER_PHASES[this.currentPhaseIndex].semester;
-    this.gameTime.year = 2024 + Math.floor(this.currentPhaseIndex / 2);
+    // 游戏内学年使用 1–4，而不是现实年份；这与 TimeSystem、时间活动和
+    // 存档字段保持一致，确保四年流程中的学年限定事件可以正确触发。
+    this.gameTime.year = SEMESTER_PHASES[this.currentPhaseIndex].year;
     this.gameTime.week = 1;
     this.gameTime.day = 1;
 

@@ -722,6 +722,60 @@
   font-size: 13px;
 }
 
+/* 毕业结局：以档案卡片呈现四年成长，避免额外图标造成视觉噪声。 */
+#game-dashboard-ui .gd-ending-hero {
+  margin-bottom: 14px;
+  padding: 18px;
+  border: 1px solid rgba(245, 197, 66, 0.28);
+  border-radius: var(--hw-radius-lg);
+  background: linear-gradient(135deg, rgba(37, 64, 73, 0.78), rgba(15, 29, 47, 0.7));
+}
+
+#game-dashboard-ui .gd-ending-hero-title {
+  margin-top: 5px;
+  color: #fff2c4;
+  font-family: var(--hw-font-serif);
+  font-size: 25px;
+  font-weight: 700;
+}
+
+#game-dashboard-ui .gd-ending-hero-meta {
+  margin-top: 8px;
+  color: var(--hw-text-muted);
+  font-size: 12px;
+}
+
+#game-dashboard-ui .gd-ending-summary,
+#game-dashboard-ui .gd-ending-dimensions {
+  margin-bottom: 16px;
+  padding: 15px;
+  border: 1px solid rgba(148, 163, 184, 0.14);
+  border-radius: var(--hw-radius-md);
+  background: rgba(255, 255, 255, 0.035);
+}
+
+#game-dashboard-ui .gd-ending-summary { color: var(--hw-text-muted); line-height: 1.75; }
+#game-dashboard-ui .gd-ending-section-title { margin: 0 0 8px; }
+
+#game-dashboard-ui .gd-ending-stat-row {
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr) 34px;
+  align-items: center;
+  gap: 8px;
+  min-height: 32px;
+}
+
+#game-dashboard-ui .gd-ending-stat-row + .gd-ending-stat-row { border-top: 1px solid rgba(148, 163, 184, 0.1); }
+#game-dashboard-ui .gd-ending-stat-label { color: var(--hw-text-muted); font-size: 12px; }
+#game-dashboard-ui .gd-ending-stat-value { color: var(--hw-text); font-size: 12px; font-weight: 700; text-align: right; }
+#game-dashboard-ui .gd-ending-stat-row .hw-progress { margin: 0 !important; }
+#game-dashboard-ui .gd-ending-empty-mark { margin-bottom: 8px; color: var(--hw-gold); font: 700 28px/1 var(--hw-font-serif); }
+
+@media (max-width: 480px) {
+  #game-dashboard-ui .gd-ending-hero { padding: 15px; }
+  #game-dashboard-ui .gd-ending-hero-title { font-size: 22px; }
+}
+
 /* 可访问性：减少动画 */
 @media (prefers-reduced-motion: reduce) {
   #game-dashboard-ui .gd-panel,

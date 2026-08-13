@@ -48,6 +48,8 @@ function checkPackageScripts() {
     'test:linkage',
     'test:dashboard',
     'test:campus-week',
+    'test:newcomer-guide',
+    'test:four-year',
     'test:panels-ui',
     'test:ui-layout',
     'test:responsive',
