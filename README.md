@@ -20,6 +20,14 @@
 | --- | --- |
 | ![校园地图](docs/showcase/screenshots/phase9-map-desktop.png) | ![NPC 对话](docs/showcase/screenshots/phase9-npc-dialogue.png) |
 
+## 个人体验亮点
+
+| 从南大门开始 | 四年毕业档案 |
+| --- | --- |
+| ![新手引导](docs/showcase/screenshots/personal-newcomer-guide.png) | ![毕业档案](docs/showcase/screenshots/personal-graduation-archive.png) |
+
+新手引导以南大门为起点，帮助玩家完成首次移动、NPC 对话、任务查看与保存；毕业后则以「四年档案」回顾角色的成长维度与校园经历。
+
 ## 我负责的个人迭代
 
 本项目起源于团队课程设计。我在保留原项目团队贡献说明的前提下，负责个人版本的持续迭代，重点包括：
