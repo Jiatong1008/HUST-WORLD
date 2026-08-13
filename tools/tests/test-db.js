@@ -21,7 +21,12 @@ async function testDatabase() {
     console.log('');
     console.log('2️⃣ 检查数据库是否存在...');
     const dbName = process.env.DB_NAME || 'hust_world';
-    const [databases] = await connection.execute('SHOW DATABASES LIKE ?', [dbName]);
+    // SHOW DATABASES 不支持预处理占位符。通过 information_schema 查询既可
+    // 保留参数化，也能在 MySQL 8 与 MariaDB 中稳定运行。
+    const [databases] = await connection.execute(
+      'SELECT SCHEMA_NAME FROM information_schema.SCHEMATA WHERE SCHEMA_NAME = ?',
+      [dbName]
+    );
     
     if (databases.length > 0) {
       console.log('✅ 数据库已存在:', dbName);
